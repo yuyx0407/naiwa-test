@@ -55,59 +55,208 @@
     border:1px solid rgba(255,255,255,.24);background:transparent;color:#fff;cursor:pointer}
   dialog button:hover{background:rgba(255,255,255,.1)}
   /* ── 跳转页专用 ── */
-  .bar{justify-content:space-between}
-  .bar .to{font-size:12px;letter-spacing:.14em;color:rgba(255,255,255,.9);
-    text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 14px rgba(0,0,0,.8)}
-  .bar .to i{font-style:normal;color:var(--gold)}
-  .bar .ab{pointer-events:auto;font:inherit;font-size:12px;letter-spacing:.1em;
-    color:#EAF1FA;cursor:pointer;border:1px solid rgba(255,255,255,.32);border-radius:99px;
-    padding:6px 13px;background:rgba(10,22,38,.62);transition:background .2s,border-color .2s}
-  .bar .ab:hover{background:rgba(27,75,141,.6);border-color:rgba(255,255,255,.6)}
-  .jp{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:0 16px 16px;
-    display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;
-    background:linear-gradient(to top,rgba(6,14,26,.8),rgba(6,14,26,.3) 55%,transparent)}
-  .ring{width:42px;height:42px;transform:rotate(-90deg)}
-  .ring circle{fill:none;stroke-width:3;stroke-linecap:round}
-  .ring .bg{stroke:rgba(255,255,255,.16)}
-  .ring .fg{stroke:var(--gold);transition:stroke-dashoffset .18s linear}
-  .jp .who{font-size:12.5px;letter-spacing:.2em;color:rgba(255,255,255,.72);
-    text-shadow:0 1px 6px rgba(0,0,0,.7)}
-  .jp .who b{color:#fff;font-weight:600;letter-spacing:.06em}
-  .jp .hint{font-size:11.5px;letter-spacing:.14em;color:rgba(255,255,255,.5)}
-  .go{pointer-events:auto;font:inherit;font-size:13px;letter-spacing:.12em;color:#fff;
-    cursor:pointer;padding:11px 30px;border-radius:99px;border:1px solid rgba(255,255,255,.34);
-    background:rgba(10,22,38,.72);transition:background .2s,transform .12s}
-  .go:hover{background:var(--blue);border-color:transparent}
-  .go:active{transform:translateY(1px) scale(.98)}
-  #sub{position:fixed;left:0;right:0;top:5.5%;z-index:6;text-align:center;pointer-events:none;
-    opacity:0;transition:opacity .9s ease}
+  html,body{height:100%;min-height:100%;overflow:hidden;background:#F3EFE5}
+  body{display:grid;place-items:center;padding:clamp(12px,2.2vw,34px);color:#18304D;
+    background:radial-gradient(ellipse at 50% 45%,#fffdf8 0%,#f5f0e5 70%,#ebe4d5 100%)}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.34;
+    background-image:radial-gradient(rgba(27,75,141,.12) .7px,transparent .7px);
+    background-size:18px 18px;mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
+  .jump-shell{position:relative;isolation:isolate;width:min(1600px,100%);height:min(1600px,calc(100dvh - 28px));
+    min-height:520px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden;
+    background:rgba(255,254,250,.96);border:1px solid rgba(27,75,141,.22);border-radius:14px;
+    box-shadow:0 28px 90px rgba(50,58,65,.18),0 4px 14px rgba(27,75,141,.08)}
+  .jump-shell::before{content:"";position:absolute;inset:9px;z-index:8;pointer-events:none;
+    border:1px solid rgba(27,75,141,.13);border-radius:8px}
+  #opening{position:fixed;inset:0;z-index:40;background:#FFFDF6;opacity:1;
+    transition:opacity .85s cubic-bezier(.22,.75,.25,1)}
+  #opening.out{opacity:0;pointer-events:none}
+  #opening iframe{display:block;width:100%;height:100%;border:0}
+  #stage-wait{position:fixed;inset:0;z-index:35;display:none;place-items:center;
+    background:rgba(245,241,232,.88);backdrop-filter:blur(8px);color:#18304D}
+  #stage-wait.on{display:grid}
+  #stage-wait p{font-size:12px;letter-spacing:.22em;color:rgba(24,48,77,.66)}
+  .bar,.jp,#sub{opacity:0;visibility:hidden;transition:opacity .65s ease,visibility .65s}
+  body.stage3d-on .bar,body.stage3d-on .jp,
+  body.stage3d-on #sub.on{opacity:1;visibility:visible}
+  .bar{position:relative;inset:auto;z-index:3;height:clamp(76px,9.4vh,112px);padding:0 clamp(22px,4vw,62px);
+    display:flex;align-items:center;gap:18px;justify-content:flex-start;pointer-events:auto;
+    background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,254,250,.9));
+    border-bottom:1px solid rgba(27,75,141,.14)}
+  .brand-seal{width:clamp(42px,5vw,62px);height:clamp(42px,5vw,62px);object-fit:contain;flex:none;
+    filter:drop-shadow(0 2px 4px rgba(27,75,141,.13))}
+  .brand-copy{min-width:0}
+  .bar b{display:block;font-size:clamp(16px,1.8vw,23px);font-weight:700;letter-spacing:.16em;color:#1B4B8D;text-shadow:none}
+  .brand-copy small{display:block;margin-top:5px;font-size:clamp(9px,1vw,11px);letter-spacing:.32em;color:#8995A5}
+  .bar-spacer{flex:1}
+  .bar .destination{display:flex;align-items:center;gap:9px;margin-right:clamp(5px,2vw,26px);
+    font-size:clamp(10px,1.1vw,13px);letter-spacing:.1em;color:#66768B}
+  .bar .destination i{display:block;width:7px;height:7px;border-radius:50%;background:#C9A227;
+    box-shadow:0 0 0 4px rgba(201,162,39,.12)}
+  .bar .destination b{display:inline;font-size:inherit;letter-spacing:.04em;color:#1B4B8D}
+  .bar .ab{pointer-events:auto;font:inherit;font-size:11px;letter-spacing:.1em;color:#58708F;cursor:pointer;
+    border:1px solid rgba(27,75,141,.24);border-radius:99px;padding:8px 15px;background:#fff;
+    transition:background .2s,border-color .2s,color .2s}
+  .bar .ab:hover{background:#1B4B8D;border-color:#1B4B8D;color:#fff}
+  .jump-stage{position:relative;min-height:0;overflow:hidden;isolation:isolate;
+    background:linear-gradient(180deg,#B7C9CF 0%,#E7E4D7 49%,#B8B8A2 100%)}
+  .jump-stage::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(90deg,rgba(15,31,48,.12),transparent 16%,transparent 84%,rgba(15,31,48,.12)),
+      linear-gradient(0deg,rgba(18,35,52,.16),transparent 22%,transparent 82%,rgba(18,35,52,.11))}
+  #gl{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+  #gl.drag{cursor:grabbing}
+  #sub{position:absolute;top:20px;right:clamp(20px,4vw,58px);z-index:2;left:auto;text-align:right;
+    pointer-events:none;opacity:0;transition:opacity .9s ease;padding:11px 15px;
+    border:1px solid rgba(255,255,255,.32);border-radius:8px;background:rgba(13,31,49,.42);
+    color:#fff;backdrop-filter:blur(10px);box-shadow:0 8px 28px rgba(13,31,49,.15)}
   #sub.on{opacity:1}
-  #sub b{display:block;font-size:clamp(22px,5.4vw,40px);font-weight:650;letter-spacing:.06em;
-    text-shadow:0 2px 24px rgba(0,0,0,.85)}
-  #sub span{display:block;margin-top:12px;font-size:13px;letter-spacing:.34em;
-    color:rgba(255,255,255,.76);text-shadow:0 1px 10px rgba(0,0,0,.85)}
-  .hold{position:fixed;left:0;right:0;top:46%;z-index:7;text-align:center;pointer-events:none;
-    opacity:0;transition:opacity .25s}
+  #sub b{display:block;font-size:clamp(13px,1.5vw,17px);font-weight:600;letter-spacing:.1em;
+    text-shadow:0 1px 5px rgba(0,0,0,.25)}
+  #sub span{display:block;margin-top:5px;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.78)}
+  .jp{position:relative;left:auto;right:auto;bottom:auto;z-index:3;min-height:clamp(148px,19vh,205px);
+    padding:22px clamp(24px,4vw,64px);display:grid;grid-template-columns:minmax(180px,1fr) minmax(260px,1.05fr) auto;
+    align-items:center;gap:clamp(18px,3vw,48px);pointer-events:auto;background:#FFFEFA;
+    border-top:1px solid rgba(27,75,141,.14)}
+  .footer-copy .eyebrow{font-size:10px;letter-spacing:.24em;color:#9A8C6D}
+  .footer-copy p{margin-top:8px;font-size:clamp(13px,1.4vw,17px);letter-spacing:.08em;color:#8390A0}
+  .footer-copy p b{margin-left:4px;color:#1B4B8D;font-size:1.08em;letter-spacing:.07em}
+  .jp-progress{min-width:0}
+  .progress-label{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:#728198;
+    font-size:11px;letter-spacing:.1em}
+  .ring{width:34px;height:34px;flex:none;transform:rotate(-90deg)}
+  .ring circle{fill:none;stroke-width:3;stroke-linecap:round}
+  .ring .bg{stroke:rgba(27,75,141,.12)}
+  .ring .fg{stroke:var(--gold);transition:stroke-dashoffset .18s linear}
+  .progress-status{flex:1;color:#1B4B8D;font-weight:600;letter-spacing:.12em}
+  .progress-time{font-variant-numeric:tabular-nums;color:#97A1AE}
+  .progress-track{height:5px;overflow:hidden;border-radius:99px;background:rgba(27,75,141,.1)}
+  .progress-track i{display:block;width:0;height:100%;border-radius:inherit;
+    background:linear-gradient(90deg,#8AA4C4,#1B4B8D);transition:width .18s linear}
+  .jp .hint{margin-top:9px;font-size:10px;letter-spacing:.09em;color:#A1A9B2}
+  .go{pointer-events:auto;white-space:nowrap;font:inherit;font-size:13px;letter-spacing:.1em;color:#fff;
+    cursor:pointer;padding:13px 26px;border-radius:99px;border:1px solid #1B4B8D;
+    background:#1B4B8D;box-shadow:0 8px 18px rgba(27,75,141,.19);transition:background .2s,transform .12s,box-shadow .2s}
+  .go:hover{background:#143B72;box-shadow:0 10px 22px rgba(27,75,141,.26)}
+  .go:active{transform:translateY(1px) scale(.98)}
+  .hold{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+    text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
   .hold.on{opacity:1}
-  .hold span{font-size:12px;letter-spacing:.3em;color:#fff;
-    background:rgba(8,16,28,.72);padding:8px 18px;border-radius:99px}
+  .hold span{font-size:12px;letter-spacing:.2em;color:#fff;
+    background:rgba(8,24,40,.72);padding:9px 18px;border-radius:99px;box-shadow:0 4px 18px rgba(0,0,0,.2)}
+  @media (max-width:760px){
+    body{padding:9px}
+    .jump-shell{height:calc(100dvh - 18px);min-height:0;border-radius:11px}
+    .jump-shell::before{inset:6px}
+    .bar{height:70px;padding:0 17px;gap:10px}
+    .brand-seal{width:42px;height:42px}
+    .bar b{font-size:15px;letter-spacing:.1em}
+    .brand-copy small{margin-top:3px;font-size:8px;letter-spacing:.2em}
+    .bar .destination{display:none}
+    .bar .ab{padding:7px 11px;font-size:10px}
+    .jp{min-height:148px;padding:15px 19px;grid-template-columns:minmax(0,1fr) auto;gap:9px 14px}
+    .footer-copy{grid-column:1/-1}
+    .footer-copy .eyebrow{font-size:9px}
+    .footer-copy p{margin-top:5px;font-size:13px}
+    .progress-label{margin-bottom:7px;gap:7px;font-size:10px}
+    .ring{width:28px;height:28px}
+    .progress-track{height:4px}
+    .jp .hint{margin-top:6px;font-size:9px;letter-spacing:.02em;white-space:nowrap}
+    .go{grid-column:2;grid-row:2;padding:11px 17px;font-size:11px}
+    #sub{top:12px;right:14px;padding:8px 10px}
+    #sub b{font-size:12px}
+    #sub span{font-size:9px;margin-top:3px}
+  }
+  @media (max-width:390px){
+    .footer-copy p{font-size:12px}
+    .jp{padding-left:14px;padding-right:14px;column-gap:8px}
+    .jp .hint{font-size:8px}
+    .go{padding:10px 12px}
+  }
+  @media (max-height:620px) and (min-width:761px){
+    .jump-shell{height:calc(100dvh - 20px);min-height:0}
+    .bar{height:66px}
+    .jp{min-height:126px;padding-top:14px;padding-bottom:14px}
+  }
+  /* 3D 是整页底景；2D 开场与常驻控件作为轻透玻璃层叠在前面。 */
+  html,body{width:100%;height:100%;min-height:0;overflow:hidden;background:#0E1A2B}
+  body{display:block;padding:0;color:#18304D;background:#0E1A2B}
+  body::before,body::after{display:none}
+  .jump-shell,.jump-shell::before{display:none}
+  .jump-stage{position:fixed;inset:0;z-index:0;width:100vw;height:100dvh;min-height:0;overflow:hidden;
+    background:#0E1A2B}
+  .jump-stage::after{background:linear-gradient(90deg,rgba(9,22,36,.12),transparent 20%,transparent 80%,rgba(9,22,36,.12)),
+      linear-gradient(0deg,rgba(9,22,36,.22),transparent 24%,transparent 78%,rgba(9,22,36,.08))}
+  .bar{position:fixed;inset:0 0 auto;height:clamp(78px,10vh,112px);z-index:6;padding:0 clamp(22px,5vw,76px);
+    background:linear-gradient(180deg,rgba(255,253,246,.97),rgba(255,253,246,.84) 68%,rgba(255,253,246,0));
+    border:0;pointer-events:auto}
+  .jp{position:fixed;inset:auto 0 0;z-index:6;min-height:clamp(148px,19vh,205px);
+    padding:24px clamp(22px,5vw,76px) 28px;
+    background:linear-gradient(0deg,rgba(255,253,246,.98),rgba(255,253,246,.88) 72%,rgba(255,253,246,0));
+    border:0}
+  #sub{position:absolute;top:clamp(88px,12vh,136px);right:clamp(22px,5vw,76px);left:auto;z-index:3}
+  .hold{position:absolute}
+  #opening{background:transparent}
+  #opening iframe{background:transparent}
+  @media(max-width:760px){
+    body{padding:0}
+    .bar{height:76px;padding:0 18px;gap:10px}
+    .brand-seal{width:42px;height:42px}
+    .bar b{font-size:15px;letter-spacing:.1em}
+    .brand-copy small{font-size:8px;letter-spacing:.2em}
+    .bar .destination{display:none}
+    .bar .ab{padding:7px 11px;font-size:10px}
+    .jp{min-height:154px;padding:15px 19px 18px;grid-template-columns:minmax(0,1fr) auto;gap:9px 14px}
+    .footer-copy{grid-column:1/-1}
+    .footer-copy p{margin-top:5px;font-size:13px}
+    .progress-label{margin-bottom:7px;gap:7px;font-size:10px}
+    .ring{width:28px;height:28px}
+    .progress-track{height:4px}
+    .jp .hint{margin-top:6px;font-size:9px;letter-spacing:.02em;white-space:nowrap}
+    .go{grid-column:2;grid-row:2;padding:11px 17px;font-size:11px}
+    #sub{top:84px;right:14px;padding:8px 10px}
+    #sub b{font-size:12px}
+    #sub span{font-size:9px;margin-top:3px}
+  }
+  @media(max-width:390px){
+    .jp{padding-left:14px;padding-right:14px;column-gap:8px}
+    .jp .hint{font-size:8px}
+    .go{padding:10px 12px}
+  }
+  @media(max-height:620px){
+    .bar{height:70px}
+    .jp{min-height:120px;padding-top:13px;padding-bottom:15px}
+    #sub{top:76px}
+  }
+  @media (prefers-reduced-motion:reduce){#opening{transition-duration:.2s}}
 </style>
 </head>
 <body>
-<canvas id="gl"></canvas>
-<div class="bar"><b>中国奶娃大学</b><button class="ab" id="about-btn" type="button">关于</button></div>
-<div class="jp">
+<div class="jump-stage" id="stage3d"><canvas id="gl"></canvas><div id="sub"><b>南京传媒学院 · 新生报到</b><span>奶娃陪你走进校园</span></div><div class="hold" id="hold"><span>已暂停</span></div></div>
+<header class="bar"><img class="brand-seal" src="assets/badge.webp" alt=""><div class="brand-copy"><b>中国奶娃大学</b><small>新 生 护 送 中 心</small></div><span class="bar-spacer"></span><span class="destination"><i></i>正在护送你前往 <b>南京传媒学院</b></span><button class="ab" id="about-btn" type="button">关于本站</button></header>
+
+<footer class="jp">
+  <div class="footer-copy">
+    <span class="eyebrow">新 生 报 到 · CAMPUS ARRIVAL</span>
+    <p>奶娃正在护送你前往 <b>南京传媒学院</b></p>
+  </div>
+  <div class="jp-progress">
+    <div class="progress-label">
   <svg class="ring" viewBox="0 0 52 52" aria-hidden="true">
     <circle class="bg" cx="26" cy="26" r="23"></circle>
     <circle class="fg" id="ring" cx="26" cy="26" r="23"
             stroke-dasharray="144.5" stroke-dashoffset="144.5"></circle>
   </svg>
-  <p class="who">正在前往 <b>南京传媒学院</b></p>
-  <button class="go" id="go" type="button">立即前往</button>
-  <p class="hint" id="tip">轻点画面直接前往 · 长按暂停</p>
-</div>
-<div id="sub"><b>南京传媒学院</b><span>新生报到</span></div>
-<div class="hold" id="hold"><span>已暂停</span></div>
+      <span class="progress-status" id="phase">护送中</span>
+      <span class="progress-time" id="jump-seconds">7.0s</span>
+    </div>
+    <div class="progress-track"><i id="jump-fill"></i></div>
+    <p class="hint" id="tip">轻点画面立即前往 · 长按暂停</p>
+  </div>
+  <button class="go" id="go" type="button">立即前往 ↗</button>
+</footer>
+<div id="opening"><iframe id="opening-frame" title="中国奶娃大学开场动画" src="jump-opening.html?embedded=1"></iframe></div>
+<script>(function(){var f=document.getElementById("opening-frame"),m=new URLSearchParams(location.search).get("motion");
+if(m)f.src="jump-opening.html?embedded=1&motion="+encodeURIComponent(m);})();</script>
+<div id="stage-wait"><p>校门正在显影</p></div>
 <div id="load"><div><div class="sp"></div><p>正在搭建校门场景</p></div></div>
 <dialog id="about">
   <h2>关于本页</h2>
@@ -134,7 +283,17 @@ addEventListener("error",function(e){
 "use strict";
 var canvas=document.getElementById("gl"), load=document.getElementById("load");
 var Q=location.search;
-var JUMP=/[?&]jump/.test(Q);
+var JUMP=true;
+var jumpStage=document.getElementById("stage3d");
+function getViewSize(){
+  if(JUMP&&jumpStage){
+    var r=jumpStage.getBoundingClientRect();
+    return {width:Math.max(1,r.width),height:Math.max(1,r.height)};
+  }
+  return {width:innerWidth,height:innerHeight};
+}
+var GATE_READY=!JUMP;
+var GATE_TIMED_OUT=false;
 /* 后期链（泛光+调色+FXAA）目前只在 ?post 下开启：它在无头 SwiftShader 下每帧要
    几分钟，我没能把它验收通过，所以默认走硬件 MSAA 直出。
    注意：下面这次 getContext 决定了最终上下文的属性，antialias 必须在这里给，
@@ -146,10 +305,18 @@ try{
       ||canvas.getContext("webgl",{antialias:!WANT_POST});
 }catch(e){}
 if(!window.THREE||!probe){
-  /* 兜底：3D 起不来就退回 2D 跳转动画（index.html 自己会在 5.9 秒后跳南传） */
-  load.innerHTML='<div><p style="letter-spacing:.05em">这台设备跑不动 3D，'+
-    '正在退回 2D 版…</p></div>';
-  setTimeout(function(){location.replace("index.html");},1200);
+  /* WebGL 不可用时继续完整播放同一段 2D 动画，结束后由顶层页面跳转。 */
+  var fallbackFrame=document.getElementById("opening-frame");
+  if(fallbackFrame){
+    var fallbackMotion=new URLSearchParams(Q).get("motion");
+    window.addEventListener("message",function(e){
+      if(e.origin===location.origin&&e.source===fallbackFrame.contentWindow&&
+         e.data&&e.data.type==="jump-target")location.replace("https://www.cucn.edu.cn/");
+    });
+    fallbackFrame.src="jump-opening.html?embedded=1&fallback=1"+
+      (fallbackMotion?"&motion="+encodeURIComponent(fallbackMotion):"");
+  }
+  load.style.display="none";
   return;
 }
 var T=window.THREE;
@@ -276,7 +443,35 @@ function clothRough(){
     g.fillStyle="rgba(0,0,0,.14)";g.fillRect(0,i,S,1);
   }
   noise(g,S,S,.8,110,190);
-  return tex(c,null,true);
+  return {rough:tex(c,null,true),normal:tex(toNormal(c,.72),null,true)};
+}
+function heroSkinMaps(){
+  var S=512,color=cvs(S,S),cg=color.getContext("2d");
+  cg.fillStyle="#FFF9DC";cg.fillRect(0,0,S,S);
+  for(var i=0;i<110;i++){
+    var x=Math.random()*S,y=Math.random()*S,r=10+Math.random()*46;
+    var rg=cg.createRadialGradient(x,y,0,x,y,r);
+    rg.addColorStop(0,Math.random()<.5?"rgba(196,134,38,.045)":"rgba(255,255,255,.085)");
+    rg.addColorStop(1,"rgba(255,255,255,0)");
+    cg.fillStyle=rg;cg.beginPath();cg.arc(x,y,r,0,Math.PI*2);cg.fill();
+  }
+  for(i=0;i<1450;i++){
+    cg.fillStyle=Math.random()<.58?"rgba(133,91,30,.045)":"rgba(255,255,255,.10)";
+    cg.beginPath();cg.ellipse(Math.random()*S,Math.random()*S,.45+Math.random()*.8,
+      .35+Math.random()*.7,Math.random()*Math.PI,0,Math.PI*2);cg.fill();
+  }
+  var height=cvs(S,S),hg=height.getContext("2d");
+  hg.fillStyle="#808080";hg.fillRect(0,0,S,S);
+  for(i=0;i<260;i++){
+    var hx=Math.random()*S,hy=Math.random()*S,hr=8+Math.random()*42;
+    var grad=hg.createRadialGradient(hx,hy,0,hx,hy,hr);
+    grad.addColorStop(0,Math.random()<.5?"rgba(255,255,255,.11)":"rgba(0,0,0,.09)");
+    grad.addColorStop(1,"rgba(128,128,128,0)");
+    hg.fillStyle=grad;hg.beginPath();hg.arc(hx,hy,hr,0,Math.PI*2);hg.fill();
+  }
+  var rough=cvs(S,S),rg=rough.getContext("2d");
+  rg.fillStyle="#D0D0D0";rg.fillRect(0,0,S,S);noise(rg,S,S,.93,182,214);
+  return {map:tex(color),normal:tex(toNormal(height,1.2),null,true),rough:tex(rough,null,true)};
 }
 /* 接触阴影贴片：物体「浮着」的头号元凶就是没有它 */
 var _aoCache=null;
@@ -303,11 +498,11 @@ function ao(size,opacity,x,y,z,ry){
   m.raycast=function(){};return m;
 }
 function bellyTex(){
-  var S=256,c=cvs(S,S),g=c.getContext("2d");
+  var S=384,c=cvs(S,S),g=c.getContext("2d");
   var rg=g.createRadialGradient(S/2,S*.52,0,S/2,S*.52,S*.50);
-  rg.addColorStop(0,"rgba(226,214,180,1)");rg.addColorStop(.52,"rgba(226,214,180,1)");
-  rg.addColorStop(.78,"rgba(226,214,180,.58)");rg.addColorStop(.93,"rgba(226,214,180,.18)");
-  rg.addColorStop(1,"rgba(226,214,180,0)");
+  rg.addColorStop(0,"rgba(235,228,207,1)");rg.addColorStop(.52,"rgba(235,228,207,1)");
+  rg.addColorStop(.78,"rgba(235,228,207,.58)");rg.addColorStop(.93,"rgba(235,228,207,.18)");
+  rg.addColorStop(1,"rgba(235,228,207,0)");
   g.save();g.translate(S/2,S*.52);g.scale(.80,1.06);g.translate(-S/2,-S*.52);
   g.fillStyle=rg;g.fillRect(0,0,S,S);g.restore();
   return tex(c);
@@ -380,10 +575,16 @@ function bannerTex(title,lines,bg){
 
 /* ══ 2. 渲染器 + IBL 环境光照 ═══════════════════════════ */
 var DPR=Math.min(devicePixelRatio||1,hiEnd?2:1.25);
+var viewSize=getViewSize();
+function getCameraFov(aspect){
+  if(!JUMP||aspect>=16/10)return 36;
+  var horizontal=2*Math.atan(Math.tan(36*Math.PI/360)*(16/10));
+  return 2*Math.atan(Math.tan(horizontal/2)/aspect)*180/Math.PI;
+}
 var renderer=new T.WebGLRenderer({canvas:canvas,antialias:!WANT_POST,
   powerPreference:"high-performance"});
 renderer.setPixelRatio(DPR);
-renderer.setSize(innerWidth,innerHeight,false);
+renderer.setSize(viewSize.width,viewSize.height,false);
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=T.PCFSoftShadowMap;
 renderer.outputEncoding=T.sRGBEncoding;
@@ -392,7 +593,8 @@ renderer.toneMappingExposure=.74;
 if(/[?&]ns/.test(Q))renderer.shadowMap.enabled=false;   /* 验收用：?ns 关阴影，定位帧耗时来源 */
 
 var scene=new T.Scene();
-var camera=new T.PerspectiveCamera(36,innerWidth/innerHeight,.4,600);
+var camera=new T.PerspectiveCamera(getCameraFov(viewSize.width/viewSize.height),
+  viewSize.width/viewSize.height,.4,600);
 
 /* 程序化等距柱状天空：天顶→地平线→地面反弹，日轮与平行光严格同向 */
 var SUN_POS=new T.Vector3(27,15.5,-9.5);          /* ← 低角度斜射，长影是质感的一半 */
@@ -440,7 +642,7 @@ scene.background=skyTex0;
 scene.fog=new T.Fog(0xCBD3D2,40,186);
 
 /* ══ 3. 材质库：全部带法线 + 粗糙度 + 环境反射 ═══════════ */
-var sm=stoneMaps(),tm=tileMaps(),pm2=paveMaps(),gm=grassMaps(),fm=facadeMaps(),cr=clothRough();
+var sm=stoneMaps(),tm=tileMaps(),pm2=paveMaps(),gm=grassMaps(),fm=facadeMaps(),cr=clothRough(),heroSkin=heroSkinMaps();
 var fstone=fineStone();
 function std(o){return new T.MeshStandardMaterial(o);}
 var M={
@@ -463,16 +665,18 @@ var M={
                color:0xD3DAE2,roughness:.88,metalness:.04,envMapIntensity:.95}),
   wallP : std({color:0x9AA4AF,roughness:.9,envMapIntensity:.8}),
   wallT : std({color:0x75808C,roughness:.92,envMapIntensity:.7}),
-  tentR : std({normalMap:sm.normal,roughnessMap:cr,color:0x8E2018,roughness:1,envMapIntensity:.42}),
-  tentB : std({normalMap:sm.normal,roughnessMap:cr,color:0x17427E,roughness:1,envMapIntensity:.42}),
-  cloth : std({color:0xF2EDE1,roughness:.92,side:T.DoubleSide,envMapIntensity:.6}),
+  tentR : std({normalMap:cr.normal,roughnessMap:cr.rough,color:0x8E2018,roughness:1,envMapIntensity:.42}),
+  tentB : std({normalMap:cr.normal,roughnessMap:cr.rough,color:0x17427E,roughness:1,envMapIntensity:.42}),
+  cloth : std({normalMap:cr.normal,roughnessMap:cr.rough,color:0xF2EDE1,roughness:.92,side:T.DoubleSide,envMapIntensity:.6}),
   pole  : std({color:0x4E5359,roughness:.52,metalness:.45,envMapIntensity:.65}),
   table : std({normalMap:sm.normal,color:0x8A6A46,roughness:.88,envMapIntensity:.6}),
   bulb  : std({color:0x221C10,emissive:0xFFD9A0,emissiveIntensity:5,roughness:.4}),
-  hero  : std({color:0xB48420,roughness:.54,metalness:0,envMapIntensity:.34}),
-  belly : std({color:0xA89468,roughness:.58,envMapIntensity:.34}),
-  dark  : std({color:0x453D2C,roughness:.62,metalness:0,envMapIntensity:.42}),
-  eyeW  : std({color:0x7FA86A,roughness:.28,metalness:0,envMapIntensity:.75}),
+  hero  : std({map:heroSkin.map,normalMap:heroSkin.normal,roughnessMap:heroSkin.rough,
+               color:0xE4B633,roughness:.78,metalness:0,envMapIntensity:.34}),
+  belly : std({color:0xE8DFC1,roughness:.64,envMapIntensity:.28}),
+  dark  : std({color:0x403A28,roughness:.68,metalness:0,envMapIntensity:.38}),
+  eyeW  : std({color:0xBBD78E,roughness:.34,metalness:0,envMapIntensity:.68}),
+  iris  : std({color:0x557A35,roughness:.28,metalness:0,envMapIntensity:.72}),
   eyeB  : std({color:0x0D100D,roughness:.16,metalness:0,envMapIntensity:.9}),
   gloss : std({color:0xFFFFFF,roughness:.10,metalness:0,envMapIntensity:1.4}),
   mouth : std({color:0x4C4331,roughness:.66})
@@ -686,11 +890,16 @@ var r2=roof(3.9,1.25,7.35);r2.position.x=-5.0;gate.add(r2);
 var r3=roof(3.9,1.25,7.35);r3.position.x=5.0;gate.add(r3);
 var N_STRUCT=gate.children.length;   /* ↑ 以上的都是结构件，?blend 时由烘焙模型顶替 */
 
-gate.add(box(4.5,1.34,.2,M.stoneD,0,8.45,.55));
+/* 校牌底板移到压檐板之前；窄托件从上沿连接，避免板体切进额枋压顶。 */
+var plaqueBacking=box(4.5,1.34,.2,M.stoneD,0,8.45,.80);gate.add(plaqueBacking);
+var plaqueMounts=[];
+[-1,1].forEach(function(s){
+  var mount=box(.24,.16,.26,M.stoneD,s*1.70,8.70,.69);plaqueMounts.push(mount);gate.add(mount);
+});
 var signMat=inkMat(plaqueTex("中国奶娃大学","#173F66","#F3EAD5",1024,288,148),.8);
 var sign=new T.Mesh(new T.PlaneGeometry(4.2,1.16),signMat);
-sign.position.set(0,8.45,.67);gate.add(sign);
-var signB=sign.clone();signB.rotation.y=Math.PI;signB.position.set(0,8.45,.43);gate.add(signB);
+sign.position.set(0,8.45,.92);gate.add(sign);
+var signB=sign.clone();signB.rotation.y=Math.PI;signB.position.set(0,8.45,.68);gate.add(signB);
 [[-5.0,"奶院"],[5.0,"娃院"]].forEach(function(o){
   var s=new T.Mesh(new T.PlaneGeometry(2.3,.56),
     inkMat(plaqueTex(o[1],"#2E4C74","#EFE6CE",512,128,64)));
@@ -765,35 +974,79 @@ var tents=[],tentRd=M.tentR.clone(),tentBd=M.tentB.clone();
 tentRd.side=T.DoubleSide;tentBd.side=T.DoubleSide;
 function tent(x,z,mat,ry){
   var g=new T.Group(), md=mat===M.tentR?tentRd:tentBd;
-  var top=mesh(new T.ConeGeometry(2.6,1.5,4),mat,0,2.62,0);
-  top.rotation.y=Math.PI/4;g.add(top);
-  g.add(box(4.6,.14,4.6,mat,0,1.84,0));
-  /* 四面垂沿：帐篷下摆没有这条就只是一块斜板 */
-  for(var e=0;e<4;e++){
-    var ang=Math.PI/4+e*Math.PI/2, sx=Math.sin(ang), sz=Math.cos(ang);
-    var val=mesh(new T.PlaneGeometry(3.26,.46,12,2),md,sx*1.62,1.58,sz*1.62);
-    val.rotation.y=Math.atan2(sx,sz);val.castShadow=true;g.add(val);
+  /* 四片有轻微张力鼓起的三角篷布：以檐口轮廓和顶点为控制边，避免四边锥尖的硬折线。 */
+  var apex=new T.Vector3(0,3.30,0),half=2.30,eaveY=1.92,segments=14;
+  var edges=[
+    {a:new T.Vector3(-half,eaveY,half),b:new T.Vector3(half,eaveY,half),n:new T.Vector3(0,0,1)},
+    {a:new T.Vector3(half,eaveY,half),b:new T.Vector3(half,eaveY,-half),n:new T.Vector3(1,0,0)},
+    {a:new T.Vector3(half,eaveY,-half),b:new T.Vector3(-half,eaveY,-half),n:new T.Vector3(0,0,-1)},
+    {a:new T.Vector3(-half,eaveY,-half),b:new T.Vector3(-half,eaveY,half),n:new T.Vector3(-1,0,0)}
+  ];
+  edges.forEach(function(edge){
+    var pos=[],uv=[],idx=[];
+    for(var j=0;j<=segments;j++)for(var i=0;i<=segments;i++){
+      var u=i/segments,v=j/segments;
+      var p=edge.a.clone().lerp(edge.b,u).multiplyScalar(v).addScaledVector(apex,1-v);
+      p.addScaledVector(edge.n,.075*Math.sin(Math.PI*u)*Math.sin(Math.PI*v));
+      pos.push(p.x,p.y,p.z);uv.push(u,v);
+    }
+    for(j=0;j<segments;j++)for(i=0;i<segments;i++){
+      var a=j*(segments+1)+i,b=a+1,c=a+segments+1,d=c+1;idx.push(a,b,c,b,d,c);
+    }
+    var geo=new T.BufferGeometry();
+    geo.setAttribute("position",new T.Float32BufferAttribute(pos,3));
+    geo.setAttribute("uv",new T.Float32BufferAttribute(uv,2));geo.setIndex(idx);geo.computeVertexNormals();
+    g.add(mesh(geo,md,0,0,0));
+  });
+  var seamMat=std({color:mat===M.tentR?0xB95A4D:0x5883AE,roughness:.88,envMapIntensity:.34});
+  edges.forEach(function(edge){
+    g.add(mesh(new T.TubeGeometry(new T.LineCurve3(apex,edge.a),18,.018,7,false),seamMat,0,0,0));
+    g.add(mesh(new T.TubeGeometry(new T.LineCurve3(apex,edge.b),18,.018,7,false),seamMat,0,0,0));
+    g.add(mesh(new T.TubeGeometry(new T.LineCurve3(edge.a,edge.b),22,.022,7,false),seamMat,0,0,0));
+  });
+  g.add(mesh(new T.SphereGeometry(.085,16,12),seamMat,0,3.30,0));
+  /* 檐口下有一道窄衬框，替代厚重的整块方板。 */
+  /* 四面垂沿：分段织物有微弧与自然下摆，不再像平直硬片 */
+  var sides=[{x:0,z:half,ry:0},{x:half,z:0,ry:Math.PI/2},
+             {x:0,z:-half,ry:Math.PI},{x:-half,z:0,ry:-Math.PI/2}];
+  for(var e=0;e<sides.length;e++){
+    var sideInfo=sides[e];
+    var val=mesh(new T.PlaneGeometry(4.18,.55,22,6),md,sideInfo.x,1.645,sideInfo.z);
+    val.rotation.y=sideInfo.ry;val.castShadow=true;g.add(val);
     g.userData.vals=g.userData.vals||[];g.userData.vals.push({m:val,
       base:val.geometry.attributes.position.array.slice()});
   }
-  [[-2,-2],[2,-2],[-2,2],[2,2]].forEach(function(p){
-    g.add(mesh(new T.CylinderGeometry(.06,.06,1.85,8),M.pole,p[0],.92,p[1]));
+  [[[-half,eaveY,half],[half,eaveY,half]],[[half,eaveY,half],[half,eaveY,-half]],
+   [[half,eaveY,-half],[-half,eaveY,-half]],[[-half,eaveY,-half],[-half,eaveY,half]]].forEach(function(pair){
+    var a=new T.Vector3(pair[0][0],pair[0][1],pair[0][2]),b=new T.Vector3(pair[1][0],pair[1][1],pair[1][2]);
+    g.add(mesh(new T.TubeGeometry(new T.LineCurve3(a,b),20,.032,8,false),seamMat,0,0,0));
   });
-  /* 桌 + 桌布（只垂前侧两面，露出桌腿才像现场） */
+  [[-2,-2],[2,-2],[-2,2],[2,2]].forEach(function(p){
+    g.add(mesh(new T.CylinderGeometry(.125,.15,.075,14),M.pole,p[0],.038,p[1]));
+    g.add(mesh(new T.CylinderGeometry(.06,.06,1.94,12),M.pole,p[0],.97,p[1]));
+    g.add(mesh(new T.CylinderGeometry(.088,.088,.055,14),M.pole,p[0],1.78,p[1]));
+  });
+  /* 桌 + 桌布，四角支腿、封边与布面压线分层。 */
   g.add(box(2.2,.1,.95,M.table,-.05,1.04,.15));
+  g.add(box(2.20,.035,.045,M.pole,-.05,1.085,.15));
   var cf=mesh(new T.PlaneGeometry(2.24,1.02),M.cloth,-.05,.55,.63);
   cf.castShadow=true;g.add(cf);
   var cs=mesh(new T.PlaneGeometry(.99,1.02),M.cloth,.97,.55,.15);
   cs.rotation.y=Math.PI/2;g.add(cs);
-  [-1,1].forEach(function(s){
-    g.add(mesh(new T.CylinderGeometry(.05,.05,.55,7),M.pole,-.05+s*1.05,.74,.15));});
+  [[-1,-1],[-1,1],[1,-1],[1,1]].forEach(function(q){
+    g.add(mesh(new T.CylinderGeometry(.035,.045,.72,10),M.pole,-.05+q[0]*1.00,.68,.15+q[1]*.39));
+  });
   for(var k=0;k<9;k++){
     g.add(box(.22+Math.random()*.2,.06+Math.random()*.16,.3,M.cloth,
       -1+Math.random()*2,1.14+Math.random()*.06,-.2+Math.random()*.6));
   }
-  var b=new T.Mesh(new T.PlaneGeometry(1.1,1.7),inkMat(bannerTex("报 到 处",
-      ["数字媒体学院","计算机与人工智能","动画学院","播音与主持学院","登记 · 领物资"],"#1B4B8D"),.55));
-  b.position.set(2.44,1.02,0);b.rotation.y=-Math.PI/2;b.castShadow=true;g.add(b);
+  var bannerMat=inkMat(bannerTex("报 到 处",
+      ["数字媒体学院","计算机与人工智能","动画学院","播音与主持学院","登记 · 领物资"],"#1B4B8D"),.55);
+  bannerMat.side=T.FrontSide;
+  var b=new T.Mesh(new T.PlaneGeometry(1.1,1.7),bannerMat);
+  b.position.set(2.434,1.02,0);b.rotation.y=-Math.PI/2;b.castShadow=true;g.add(b);
+  /* 反面独立朝向，UV 从读者视角仍是左到右，解决从帐篷另一侧看到的镜像字。 */
+  var back=b.clone();back.position.x=2.446;back.rotation.y=Math.PI/2;g.add(back);
   g.add(mesh(new T.CylinderGeometry(.04,.04,1.9,8),M.pole,2.44,.95,.62));
   g.add(ao(6.2,.42,0,.05,0));
   g.position.set(x,0,z);g.rotation.y=ry||0;scene.add(g);tents.push(g);return g;
@@ -829,14 +1082,28 @@ function balloons(x,z){
 }
 balloons(-3.2,-1.6);balloons(3.4,-5.0);
 
+var lampHousingMat=std({color:0x252B31,roughness:.42,metalness:.62,envMapIntensity:.8});
+var lampGlowMat=std({color:0xFFF1CF,emissive:0xFFD58A,emissiveIntensity:1.25,
+  roughness:.55,metalness:0,envMapIntensity:.42});
+var lampHeadGeo=bevelBox(.54,.14,.34,.045,3),lampGlassGeo=bevelBox(.39,.022,.23,.01,2);
 function lamp(x,z){
   var g=new T.Group();
+  g.add(mesh(new T.CylinderGeometry(.29,.34,.12,20),M.pole,0,.06,0));
+  g.add(mesh(new T.CylinderGeometry(.17,.24,.18,18),M.pole,0,.19,0));
   g.add(mesh(new T.CylinderGeometry(.075,.13,4.9,12),M.pole,0,2.45,0));
-  g.add(mesh(new T.CylinderGeometry(.19,.27,.24,12),M.pole,0,.12,0));
-  var arm=mesh(new T.TorusGeometry(.30,.045,6,18,Math.PI),M.pole,.24,4.86,0);
-  arm.rotation.z=-Math.PI/2;arm.rotation.y=Math.PI/2;g.add(arm);
-  g.add(box(.44,.10,.26,std({color:0x2A2418,emissive:0xFFD9A0,emissiveIntensity:3.2,
-    roughness:.4}),.52,4.78,0));
+  [.31,2.38,4.48,4.69].forEach(function(y){
+    g.add(mesh(new T.CylinderGeometry(.091,.091,.045,16),M.pole,0,y,0));
+  });
+  var side=x<0?1:-1;
+  var curve=new T.CatmullRomCurve3([
+    new T.Vector3(0,4.64,0),new T.Vector3(side*.13,4.79,0),
+    new T.Vector3(side*.31,4.84,0),new T.Vector3(side*.48,4.78,0),
+    new T.Vector3(side*.59,4.68,0)
+  ]);
+  g.add(mesh(new T.TubeGeometry(curve,30,.038,10,false),M.pole,0,0,0));
+  g.add(mesh(lampHeadGeo,lampHousingMat,side*.60,4.67,0));
+  g.add(mesh(lampGlassGeo,lampGlowMat,side*.60,4.585,0));
+  g.add(mesh(new T.CylinderGeometry(.04,.06,.10,10),M.pole,side*.60,4.75,0));
   g.position.set(x,0,z);g.add(ao(1.5,.38,0,.05,0));scene.add(g);
 }
 [-1,1].forEach(function(s){for(var k=0;k<3;k++)lamp(s*6.6,2.0-k*10);});
@@ -857,18 +1124,47 @@ function im(geo,mat,n,shadow){
   var m=new T.InstancedMesh(geo,mat,n);
   m.castShadow=!!shadow;m.receiveShadow=true;m.frustumCulled=false;scene.add(m);return m;
 }
-var LEGW=im(new T.BoxGeometry(.145,.50,.19),std({color:0xffffff,roughness:.92,envMapIntensity:.55}),CROWD);
-var LEGE=im(new T.BoxGeometry(.145,.50,.19),std({color:0xffffff,roughness:.92,envMapIntensity:.55}),CROWD);
+var pantsMat=std({color:0xffffff,roughness:.92,envMapIntensity:.55});
+var LEG_GEO=new T.CapsuleGeometry(.072,.34,5,12);
+var LEGW=im(LEG_GEO,pantsMat,CROWD);
+var LEGE=im(LEG_GEO,pantsMat,CROWD);
 var ARMW=im(new T.CapsuleGeometry(.052,.32,3,8),std({color:0xffffff,roughness:.88,envMapIntensity:.6}),CROWD);
 var ARME=im(new T.CapsuleGeometry(.052,.32,3,8),std({color:0xffffff,roughness:.88,envMapIntensity:.6}),CROWD);
-var TORS=im(new T.CapsuleGeometry(.172,.42,4,12),std({color:0xffffff,roughness:.86,envMapIntensity:.65}),CROWD,true);
-var HEAD=im(new T.SphereGeometry(.128,14,12),std({color:0xffffff,roughness:.62,envMapIntensity:.75}),CROWD,true);
-var HAIR=im(new T.SphereGeometry(.134,14,10),std({color:0xffffff,roughness:.95,envMapIntensity:.4}),CROWD);
+var torsoGeo=new T.LatheGeometry([
+  new T.Vector2(0,-.37),new T.Vector2(.095,-.36),new T.Vector2(.15,-.30),
+  new T.Vector2(.172,-.20),new T.Vector2(.17,.06),new T.Vector2(.158,.18),
+  new T.Vector2(.122,.28),new T.Vector2(.072,.33),new T.Vector2(0,.34)
+],24);
+torsoGeo.computeVertexNormals();
+var TORS=im(torsoGeo,std({color:0xffffff,roughness:.86,envMapIntensity:.65}),CROWD,true);
+var HEAD=im(new T.SphereGeometry(.128,20,16),std({color:0xffffff,roughness:.62,envMapIntensity:.75}),CROWD,true);
+var hairGeo=new T.SphereGeometry(.134,18,12,0,Math.PI*2,0,1.28);
+var HAIR=im(hairGeo,std({color:0xffffff,roughness:.95,envMapIntensity:.4}),CROWD);
+var NECK=im(new T.CylinderGeometry(.046,.052,.11,12),std({color:0xffffff,roughness:.74,envMapIntensity:.6}),CROWD);
+var HAND_GEO=new T.SphereGeometry(.048,14,10);
+var HANDW=im(HAND_GEO,std({color:0xffffff,roughness:.72,envMapIntensity:.6}),CROWD);
+var HANDE=im(HAND_GEO,HANDW.material,CROWD);
+var SHOE_GEO=new T.SphereGeometry(.09,16,12);
+var shoeMat=std({color:0xffffff,roughness:.78,metalness:.02,envMapIntensity:.5});
+var SHOEW=im(SHOE_GEO,shoeMat,CROWD,true),SHOEE=im(SHOE_GEO,shoeMat,CROWD,true);
+var earGeo=new T.SphereGeometry(.026,12,10);
+var EARW=im(earGeo,std({color:0xffffff,roughness:.7,envMapIntensity:.55}),CROWD);
+var EARE=im(earGeo,EARW.material,CROWD);
+var ringGeo=new T.TorusGeometry(.054,.008,5,14);ringGeo.rotateX(-Math.PI/2);
+var cuffGeo=new T.TorusGeometry(.053,.009,5,14);cuffGeo.rotateX(-Math.PI/2);
+var COLLAR=im(ringGeo,std({color:0xffffff,roughness:.78,envMapIntensity:.5}),CROWD);
+var CUFFW=im(cuffGeo,std({color:0xffffff,roughness:.78,envMapIntensity:.5}),CROWD);
+var CUFFE=im(cuffGeo,CUFFW.material,CROWD);
+var FACE=std({color:0x171411,roughness:.52,envMapIntensity:.35});
+var EYEW=im(new T.SphereGeometry(.012,10,8),FACE,CROWD);
+var EYEE=im(EYEW.geometry,FACE,CROWD);
+var NOSE=im(new T.SphereGeometry(.012,10,8),std({color:0xffffff,roughness:.7,envMapIntensity:.5}),CROWD);
 var BAG =im(bevelBox(.38,.54,.19,.06,2),std({color:0xffffff,roughness:.72,envMapIntensity:.6}),26,true);
 var AOI =new T.InstancedMesh(AO_GEO,new T.MeshBasicMaterial({map:aoTex(),color:0,transparent:true,
   opacity:.30,depthWrite:false,toneMapped:false}),CROWD);
 AOI.frustumCulled=false;AOI.renderOrder=1;scene.add(AOI);
-var PARTS=[LEGW,LEGE,ARMW,ARME,TORS,HEAD,HAIR,AOI];
+var PARTS=[LEGW,LEGE,ARMW,ARME,TORS,HEAD,HAIR,NECK,HANDW,HANDE,SHOEW,SHOEE,
+  EARW,EARE,COLLAR,CUFFW,CUFFE,EYEW,EYEE,NOSE,AOI];
 var crowd=[],dummy=new T.Object3D();
 var jacket=[0x2F4858,0x7A3B3B,0x3D5B3F,0x54504A,0x2C3E63,0x6B5B3E,0x8C6D4A,0x404F63,
             0x9A5B2E,0x365C6B,0x6E3A52,0x4C5A32];
@@ -876,12 +1172,46 @@ var trouser=[0x2B3038,0x3A3F46,0x4A4038,0x2E3A48,0x514A42,0x24282E];
 var skin=[0xE8C4A0,0xD9AE86,0xC08C63,0x8D6242,0xF0D2B4];
 var hairc=[0x1B1714,0x2A211B,0x3D2E22,0x14151A,0x4A3A2C];
 var bagc=[0x1B4B8D,0x8E2018,0x2E4A38,0x5A4632,0x3A3F52];
+var shoec=[0x25282A,0x453C32,0x35383B,0x5A4938];
 function rnd(a){return a[(Math.random()*a.length)|0];}
 /* 报到处前排队的固定站位：先有人排队，场景才是「报到日」 */
-var SLOTS=[[-4.0,-1.1],[-5.9,-1.1],[-4.0,.2],[-5.9,.2],[-3.0,-2.4],
+var SLOTS=[[-4.0,-1.1],[-5.9,-1.1],[-4.0,.2],[-5.9,.2],[-2.2,-2.4],
            [4.1,-4.5],[6.1,-4.5],[4.1,-3.1],[6.3,-8.2],[4.4,-8.4],
-           [-4.3,-8.6],[-6.3,-8.9],[-3.4,-11.9],[-5.4,-12.2],
-           [0,-10.6],[1.5,-12.6],[-1.4,-13.0]];
+           [-4.3,-8.6],[-6.3,-8.9],[-7.1,-10.8],[-8.3,-10.9],
+           [-2.2,-10.3],[0,-10.8],[2.2,-10.4]];
+/* 碰撞边界按地面占地登记。帐篷顶棚高于人；台阶、路缘、桌脚等低矮实体仍需避开。 */
+var CROWD_OBSTACLES=[],CROWD_RECTS=[];
+function crowdDisk(x,z,r){CROWD_OBSTACLES.push({x:x,z:z,r:r});}
+function crowdRect(x,z,hw,hd){CROWD_RECTS.push({x:x,z:z,hw:hw,hd:hd});}
+function crowdLocal(cx,cz,ry,lx,lz){
+  var c=Math.cos(ry),s=Math.sin(ry);
+  return [cx+lx*c+lz*s,cz-lx*s+lz*c];
+}
+function registerTentCollision(cx,cz,ry){
+  var table=crowdLocal(cx,cz,ry,-.05,.15);crowdDisk(table[0],table[1],1.16);
+  [[-2,-2],[2,-2],[-2,2],[2,2]].forEach(function(q){
+    var p=crowdLocal(cx,cz,ry,q[0],q[1]);crowdDisk(p[0],p[1],.11);
+  });
+  var board=crowdLocal(cx,cz,ry,2.44,0);crowdDisk(board[0],board[1],.56);
+  var banner=crowdLocal(cx,cz,ry,2.44,.62);crowdDisk(banner[0],banner[1],.09);
+}
+registerTentCollision(-4.9,-3.4,.12);
+registerTentCollision(5.1,-6.8,-.16);
+registerTentCollision(-5.3,-10.2,.2);
+crowdDisk(-3.2,-1.6,.10);crowdDisk(3.4,-5.0,.10);
+[-1,1].forEach(function(s){for(var k=0;k<3;k++)crowdDisk(s*6.6,2-k*10,.36);});
+crowdDisk(-9.2,-6.2,1.02);crowdDisk(9.4,-8.6,1.02);crowdDisk(-11.2,4,1.02);
+[-3.2,3.2,-6.5,6.5].forEach(function(x){crowdDisk(x,-14,.88);});
+for(var ti=0;ti<8;ti++){
+  var tz=-13-ti*5.6;crowdDisk(-7.6,tz,.25);crowdDisk(7.6,tz-.9,.25);
+}
+crowdDisk(-11.4,-15.6,.32);crowdDisk(11.4,-15.6,.32);
+/* 连续路缘石：步道两侧是分段压边石，广场前缘是一整道横石。 */
+[-1,1].forEach(function(s){crowdRect(s*3.06,6,.22,34);});
+crowdRect(0,-12.2,12.8,.21);
+/* 校门三层台基；人群留在台阶前的地面，避免脚和小腿穿过立面。 */
+crowdRect(0,-14,9.72,1.32);
+[-1,1].forEach(function(s){crowdRect(s*15.6,-14,7.8,.46);});
 for(var c2=0;c2<CROWD;c2++){
   var p,q=c2<SLOTS.length;
   if(q){
@@ -892,11 +1222,12 @@ for(var c2=0;c2<CROWD;c2++){
        z:-2-Math.random()*20,
        vx:(Math.random()-.5)*.34,vz:(Math.random()-.5)*.24,stat:false};
   }
-  p.ry=(q?Math.PI:0)+(Math.random()-.5)*.7;
+  p.id=c2;p.ry=(q?Math.PI:0)+(Math.random()-.5)*.7;
   p.s=1.02+Math.random()*.17;p.ph=Math.random()*6.28;
   p.arm=.5+Math.random()*.5;
   p.c=new T.Color(rnd(jacket));p.l=new T.Color(rnd(trouser));
-  p.h=new T.Color(rnd(skin));p.hr=new T.Color(rnd(hairc));
+  p.h=new T.Color(rnd(skin));p.hr=new T.Color(rnd(hairc));p.sh=new T.Color(rnd(shoec));
+  p.trim=p.c.clone().lerp(new T.Color(0xF4E8CE),.42);
   p.bag=!q&&Math.random()<.34;
   p.bc=new T.Color(rnd(bagc));
   crowd.push(p);
@@ -905,13 +1236,97 @@ for(var c2=0;c2<CROWD;c2++){
   for(var i=0;i<CROWD;i++){var p=crowd[i];
     LEGW.setColorAt(i,p.l);LEGE.setColorAt(i,p.l);
     ARMW.setColorAt(i,p.c);ARME.setColorAt(i,p.c);
-    TORS.setColorAt(i,p.c);HEAD.setColorAt(i,p.h);HAIR.setColorAt(i,p.hr);}
+    TORS.setColorAt(i,p.c);HEAD.setColorAt(i,p.h);HAIR.setColorAt(i,p.hr);
+    NECK.setColorAt(i,p.h);HANDW.setColorAt(i,p.h);HANDE.setColorAt(i,p.h);
+    NOSE.setColorAt(i,p.h);
+    EARW.setColorAt(i,p.h);EARE.setColorAt(i,p.h);
+    SHOEW.setColorAt(i,p.sh);SHOEE.setColorAt(i,p.sh);
+    COLLAR.setColorAt(i,p.trim);CUFFW.setColorAt(i,p.trim);CUFFE.setColorAt(i,p.trim);}
   PARTS.forEach(function(m){if(m.instanceColor)m.instanceColor.needsUpdate=true;});
 })();
 function place(m,i,x,y,z,ry,s,sx,sy,sz){
   dummy.position.set(x,y,z);dummy.rotation.set(0,ry,0);
   dummy.scale.set(s*(sx||1),s*(sy||1),s*(sz||1));dummy.updateMatrix();
   m.setMatrixAt(i,dummy.matrix);
+}
+function crowdRadius(p){return p.s*(.37+(p.bag ? .12 : 0));}
+function removeInwardVelocity(p,nx,nz,inward){
+  if(inward>=0)return;
+  var speed=Math.hypot(p.vx,p.vz);
+  p.vx-=inward*nx;p.vz-=inward*nz;
+  if(speed>.025&&Math.hypot(p.vx,p.vz)<.025){
+    var side=(p.id%2)?1:-1;
+    p.vx=-nz*speed*.42*side;p.vz=nx*speed*.42*side;
+  }
+}
+function pushCrowdFromDisk(p,x,z,r,salt){
+  var dx=p.x-x,dz=p.z-z,d2=dx*dx+dz*dz,min=r+crowdRadius(p);
+  if(d2>=min*min)return;
+  var d=Math.sqrt(d2),nx,nz;
+  if(d<1e-5){var a=(p.id*2.399963+salt*.618034);nx=Math.cos(a);nz=Math.sin(a);}
+  else{nx=dx/d;nz=dz/d;}
+  p.x=x+nx*min;p.z=z+nz*min;
+  removeInwardVelocity(p,nx,nz,p.vx*nx+p.vz*nz);
+}
+function pushCrowdFromRect(p,ob,salt){
+  var dx=p.x-ob.x,dz=p.z-ob.z,clearance=crowdRadius(p)+.06;
+  var px=ob.hw+clearance-Math.abs(dx),pz=ob.hd+clearance-Math.abs(dz);
+  if(px<=0||pz<=0)return;
+  var nx=0,nz=0;
+  if(px<pz){nx=dx<0?-1:1;p.x=ob.x+nx*(ob.hw+clearance);}
+  else{nz=dz<0?-1:1;p.z=ob.z+nz*(ob.hd+clearance);}
+  removeInwardVelocity(p,nx,nz,p.vx*nx+p.vz*nz);
+}
+function constrainCrowd(t){
+  var heroPos=null;
+  if(typeof hero!=="undefined"&&hero){
+    heroPos=hero.getWorldPosition(new T.Vector3());
+  }
+  for(var pass=0;pass<3;pass++){
+    for(var i=0;i<CROWD;i++){
+      var p=crowd[i];
+      for(var oi=0;oi<CROWD_OBSTACLES.length;oi++){
+        var ob=CROWD_OBSTACLES[oi];pushCrowdFromDisk(p,ob.x,ob.z,ob.r,oi+1);
+      }
+      for(oi=0;oi<CROWD_RECTS.length;oi++)pushCrowdFromRect(p,CROWD_RECTS[oi],oi+1);
+      if(heroPos)pushCrowdFromDisk(p,heroPos.x,heroPos.z,
+        Math.max(.9,Math.abs(hero.scale.x)*.56),CROWD_OBSTACLES.length+1);
+    }
+    for(i=0;i<CROWD;i++)for(var j=i+1;j<CROWD;j++){
+      var a=crowd[i],b=crowd[j];if(a.stat&&b.stat)continue;
+      var dx=b.x-a.x,dz=b.z-a.z,d2=dx*dx+dz*dz,min=crowdRadius(a)+crowdRadius(b);
+      if(d2>=min*min)continue;
+      var d=Math.sqrt(d2),nx,nz;
+      if(d<1e-5){var an=(a.id*17+b.id*31)*.618034;nx=Math.cos(an);nz=Math.sin(an);}
+      else{nx=dx/d;nz=dz/d;}
+      var overlap=min-d;
+      if(a.stat){b.x+=nx*overlap;b.z+=nz*overlap;
+        var vb=b.vx*nx+b.vz*nz;if(vb<0){b.vx-=vb*nx;b.vz-=vb*nz;}}
+      else if(b.stat){a.x-=nx*overlap;a.z-=nz*overlap;
+        var va=a.vx*nx+a.vz*nz;if(va>0){a.vx-=va*nx;a.vz-=va*nz;}}
+      else{
+        a.x-=nx*overlap*.5;a.z-=nz*overlap*.5;
+        b.x+=nx*overlap*.5;b.z+=nz*overlap*.5;
+        var rel=(b.vx-a.vx)*nx+(b.vz-a.vz)*nz;
+        if(rel<0){a.vx+=rel*.5*nx;a.vz+=rel*.5*nz;
+          b.vx-=rel*.5*nx;b.vz-=rel*.5*nz;}
+      }
+    }
+    for(i=0;i<CROWD;i++){
+      p=crowd[i];
+      for(oi=0;oi<CROWD_OBSTACLES.length;oi++){
+        ob=CROWD_OBSTACLES[oi];pushCrowdFromDisk(p,ob.x,ob.z,ob.r,oi+1);
+      }
+      for(oi=0;oi<CROWD_RECTS.length;oi++)pushCrowdFromRect(p,CROWD_RECTS[oi],oi+1);
+      if(heroPos)pushCrowdFromDisk(p,heroPos.x,heroPos.z,
+        Math.max(.9,Math.abs(hero.scale.x)*.56),CROWD_OBSTACLES.length+1);
+      if(p.x<-13){p.x=-13;if(p.vx<0)p.vx=-p.vx;}
+      if(p.x>13){p.x=13;if(p.vx>0)p.vx=-p.vx;}
+      if(p.z<-26){p.z=-26;if(p.vz<0)p.vz=-p.vz;}
+      if(p.z>10){p.z=10;if(p.vz>0)p.vz=-p.vz;}
+      if(Math.hypot(p.vx,p.vz)>.02)p.ry=Math.atan2(-p.vx,-p.vz);
+    }
+  }
 }
 function updateCrowd(t,dt){
   var bagN=0;
@@ -923,6 +1338,10 @@ function updateCrowd(t,dt){
       if(p.z<-26||p.z>10)p.vz*=-1;
       p.ry=Math.atan2(-p.vx,-p.vz);
     }
+  }
+  constrainCrowd(t);
+  for(var i=0;i<CROWD;i++){
+    var p=crowd[i];
     var moving=p.stat?0:1;
     var sw=reduce?0:Math.sin(t*3.0+p.ph);
     var bob=reduce?0:sw*.028*moving;
@@ -939,8 +1358,21 @@ function updateCrowd(t,dt){
     place(ARMW,i,x+rx*.215+fx*swing,.855*s+bob,z+rz*.215+fz*swing,p.ry,s);
     place(ARME,i,x-rx*.215-fx*swing,.855*s+bob,z-rz*.215-fz*swing,p.ry,s);
     place(TORS,i,x,.855*s+bob,z,p.ry,s,1+lean*.6,1,1-lean*.6);
+    place(NECK,i,x,1.218*s+bob,z,p.ry,s);
     place(HEAD ,i,x,1.335*s+bob,z,p.ry+lean*.8,s);
-    place(HAIR ,i,x,1.360*s+bob,z,p.ry+lean*.8,s,1,.72,1);
+    place(HAIR ,i,x,1.335*s+bob,z,p.ry+lean*.8,s);
+    place(COLLAR,i,x,1.196*s+bob,z,p.ry,s);
+    place(CUFFW,i,x+rx*.215+fx*swing,.675*s+bob,z+rz*.215+fz*swing,p.ry,s);
+    place(CUFFE,i,x-rx*.215-fx*swing,.675*s+bob,z-rz*.215-fz*swing,p.ry,s);
+    place(HANDW,i,x+rx*.215+fx*swing,.612*s+bob,z+rz*.215+fz*swing,p.ry,s);
+    place(HANDE,i,x-rx*.215-fx*swing,.612*s+bob,z-rz*.215-fz*swing,p.ry,s);
+    place(SHOEW,i,x+rx*.095+fx*.052,.052*s+lift*.35,z+rz*.095+fz*.052,p.ry+step,s,.88,.48,1.25);
+    place(SHOEE,i,x-rx*.095+fx*.052,.052*s,z-rz*.095+fz*.052,p.ry-step,s,.88,.48,1.25);
+    place(EARW,i,x+rx*.125,1.335*s+bob,z+rz*.125,p.ry,s);
+    place(EARE,i,x-rx*.125,1.335*s+bob,z-rz*.125,p.ry,s);
+    place(EYEW,i,x+rx*.043+fx*.112,1.352*s+bob,z+rz*.043+fz*.112,p.ry,s);
+    place(EYEE,i,x-rx*.043+fx*.112,1.352*s+bob,z-rz*.043+fz*.112,p.ry,s);
+    place(NOSE,i,x+fx*.124,1.328*s+bob,z+fz*.124,p.ry,s);
     place(AOI  ,i,x,.05,z,0,s*1.15);
     if(p.bag&&bagN<26){
       place(BAG,bagN++,x+rx*.34,.29*s,z+rz*.34,p.ry,s*.9);
@@ -983,162 +1415,206 @@ block(15,44,7,55,-58,.46);block(16,12,22,-57,-54,-.30);block(23,21,8,-18,-76,.09
 block(14,29,8,25,-56,-.12);block(28,15,9,66,-82,.28);
 block(24,24,9,-66,-74,-.22);block(30,12,10,-4,-104,.1);block(12,38,7,46,-88,.2);
 
-/* ══ 11. 奶娃（按参考图：梨形无脖、前腹外凸、奶油蛋形腹斑、
-        薄荷绿眼白+大黑瞳、极细微笑线、手脚为深橄榄色带指/趾） ═══════ */
-var hero=new T.Group();
+/* ══ 11. 奶娃：按三张参考图重建梨形连续体块与肢体比例 ═══════ */
+var hero=new T.Group(),EYES=[],LEGS=[],upperBody=new T.Group();
+upperBody.name="UpperBody";upperBody.position.y=.34;hero.add(upperBody);
 (function(){
-  var EYES=[];
-  /* 侧影：底部宽、向上连续收成圆顶；最宽处在 t≈.38 */
-  var PROF=[[0.000,.190],[0.020,.258],[0.060,.306],[0.120,.352],[0.200,.384],
-            [0.290,.399],[0.380,.405],[0.470,.401],[0.550,.389],[0.620,.368],
-            [0.680,.342],[0.740,.307],[0.795,.266],[0.845,.222],[0.888,.176],
-            [0.925,.130],[0.957,.088],[0.982,.050],[1.000,0]];
+  /* 脚底为 0、头顶为 1；轮廓按参考图量比例：大肚、溜肩、小圆头。 */
+  var PROF=[[.250,.000],[.262,.090],[.280,.150],[.305,.196],[.340,.228],
+            [.375,.246],[.442,.263],[.521,.269],[.600,.257],[.662,.235],
+            [.720,.208],[.760,.184],[.795,.152],[.828,.137],[.865,.129],
+            [.900,.125],[.930,.114],[.960,.089],[.982,.052],[1.000,0]];
   function radAt(t){
-    if(t<=0)return PROF[0][1];
+    if(t<=PROF[0][0])return PROF[0][1];
     for(var i=0;i<PROF.length-1;i++){
       if(t<=PROF[i+1][0]||i===PROF.length-2){
-        var a=PROF[i],b=PROF[i+1],k=(t-a[0])/Math.max(1e-6,b[0]-a[0]);
-        k=Math.max(0,Math.min(1,k));k=k*k*(3-2*k);
-        return a[1]+(b[1]-a[1])*k;
+        var a=PROF[i],b=PROF[i+1],span=Math.max(1e-6,b[0]-a[0]);
+        var u=Math.max(0,Math.min(1,(t-a[0])/span)),u2=u*u,u3=u2*u;
+        var m0=i===0?0:(b[1]-PROF[i-1][1])/(b[0]-PROF[i-1][0]);
+        var m1=i+2>=PROF.length?0:(PROF[i+2][1]-a[1])/(PROF[i+2][0]-a[0]);
+        var r=(2*u3-3*u2+1)*a[1]+(u3-2*u2+u)*span*m0
+             +(-2*u3+3*u2)*b[1]+(u3-u2)*span*m1;
+        return Math.max(Math.min(a[1],b[1]),Math.min(Math.max(a[1],b[1]),r));
       }
     }
     return 0;
   }
-  /* 把回转体压成参考图那种非对称侧影：前腹鼓出来、上半身略后仰、后背压平 */
+  function smoothstep(a,b,x){var q=Math.max(0,Math.min(1,(x-a)/(b-a)));return q*q*(3-2*q);}
   function bulge(x,t,z){
-    var h=Math.hypot(x,z)||1e-6, front=z/h;
-    var belly=Math.exp(-Math.pow((t-.40)/.30,2))*.125;
-    var lean=Math.max(0,(t-.68)/.32); lean=lean*lean*.085;
-    return front*belly-lean*(front*.35+1);
+    var front=z/(Math.hypot(x,z)||1e-6);
+    var belly=.075*Math.exp(-Math.pow((t-.50)/.20,2));
+    var head=.030*smoothstep(.76,.92,t);
+    return front*(belly+head);
   }
-  var profPts=PROF.map(function(q){return new T.Vector2(q[1],q[0]);});
-  var bodyGeo=new T.LatheGeometry(profPts,72);
-  (function(){
-    var a=bodyGeo.attributes.position;
-    for(var i=0;i<a.count;i++){
-      var x=a.getX(i),y=a.getY(i),z=a.getZ(i);
-      a.setZ(i,z+bulge(x,y,z));
+  function sweep(points,radii,steps,radial,material){
+    var curve=new T.CatmullRomCurve3(points.map(function(p){
+      return new T.Vector3(p[0],p[1],p[2]);
+    }),false,"centripetal");
+    var frames=curve.computeFrenetFrames(steps,false),pos=[],norm=[],uv=[],idx=[],stride=radial+1;
+    function radiusAt(u){
+      var q=u*(radii.length-1),k=Math.min(radii.length-2,Math.floor(q)),f=q-k;
+      f=f*f*(3-2*f);return radii[k]+(radii[k+1]-radii[k])*f;
     }
-    bodyGeo.computeVertexNormals();
-  })();
-  var body=new T.Mesh(bodyGeo,M.hero);
-  body.castShadow=body.receiveShadow=true;hero.add(body);
-
-  /* 腹斑：贴着体表生成的曲面片，软边靠贴图 alpha，不是贴一张硬边圆片 */
-  (function(){
-    var t0=.085,t1=.585,ph0=-.86,ph1=.86,nu=26,nv=16;
-    var pos=[],uv=[],idx=[];
-    for(var j=0;j<=nv;j++){
-      var t=t0+(t1-t0)*j/nv, r=radAt(t)*1.006;
-      for(var i=0;i<=nu;i++){
-        var ph=ph0+(ph1-ph0)*i/nu;
-        var x=Math.sin(ph)*r, z=Math.cos(ph)*r;
-        pos.push(x,t,z+bulge(x,t,z)+.004);
-        uv.push(i/nu,j/nv);
+    for(var i=0;i<=steps;i++){
+      var u=i/steps,c=curve.getPointAt(u),r=radiusAt(u);
+      for(var j=0;j<=radial;j++){
+        var a=j/radial*Math.PI*2,co=Math.cos(a),si=Math.sin(a);
+        var n=frames.normals[i].clone().multiplyScalar(co)
+          .addScaledVector(frames.binormals[i],si).normalize();
+        pos.push(c.x+n.x*r,c.y+n.y*r,c.z+n.z*r);
+        norm.push(n.x,n.y,n.z);uv.push(j/radial,u);
       }
     }
-    for(j=0;j<nv;j++)for(i=0;i<nu;i++){
-      var A=j*(nu+1)+i,B=A+1,C=A+nu+1,D=C+1;
-      idx.push(A,C,B,B,C,D);
+    for(i=0;i<steps;i++)for(j=0;j<radial;j++){
+      var a0=i*stride+j,b0=(i+1)*stride+j,c0=b0+1,d0=a0+1;
+      idx.push(a0,d0,b0,b0,d0,c0);
     }
     var g=new T.BufferGeometry();
     g.setAttribute("position",new T.Float32BufferAttribute(pos,3));
+    g.setAttribute("normal",new T.Float32BufferAttribute(norm,3));
     g.setAttribute("uv",new T.Float32BufferAttribute(uv,2));
-    g.setIndex(idx);g.computeVertexNormals();
-    var m=new T.Mesh(g,std({map:bellyTex(),transparent:true,roughness:.46,
-      side:T.DoubleSide,envMapIntensity:.30,depthWrite:false}));
-    m.renderOrder=1;m.receiveShadow=true;hero.add(m);
-  })();
-
-  /* 眼睛：大眼白 + 占六成的大黑瞳 + 一点高光 */
-  var EYE_T=.905, EYE_X=.098;
-  var er=radAt(EYE_T);
-  [-1,1].forEach(function(sd){
-    var ex=EYE_X*sd, ez=Math.sqrt(Math.max(1e-4,er*er-ex*ex))*.96;
-    var dz=bulge(ex,EYE_T,ez);
-    var e=mesh(new T.SphereGeometry(.082,20,16),M.eyeW,ex,EYE_T,ez+dz-.010);
-    e.userData.r=.082;EYES.push(e);hero.add(e);
-    var pu=mesh(new T.SphereGeometry(.048,18,14),M.eyeB,
-      ex*1.02,EYE_T-.004,ez+dz+.060);
-    pu.userData.r=.048;EYES.push(pu);pu.scale.set(1,1,.55);hero.add(pu);
-    hero.add(mesh(new T.SphereGeometry(.017,10,8),M.gloss,
-      ex*1.02+.023*sd,EYE_T+.034,ez+dz+.087));
-  });
-
-  /* 嘴：极细的一道弧，不是椭圆片 */
-  (function(){
-    var mt=.838, mr=radAt(mt);
-    var mz=Math.sqrt(Math.max(1e-4,mr*mr-.0009))*.99;
-    var dz=bulge(0,mt,mz);
-    var mo=new T.Mesh(new T.TorusGeometry(.072,.0085,6,22,1.15),M.mouth);
-    mo.rotation.z=-Math.PI/2-.575;
-    mo.position.set(0,mt,mz+dz-.004);
-    hero.add(mo);
-  })();
-
-  /* 腿脚：短粗腿 + 深橄榄大脚带三趾 */
-  [-1,1].forEach(function(sd){
-    var leg=new T.Group();
-    leg.add(mesh(new T.CylinderGeometry(.128,.158,.30,16),M.hero,0,-.15,0));
-    leg.add(mesh(new T.SphereGeometry(.162,16,12),M.hero,0,0,0));
-    var foot=new T.Group();foot.position.set(0,-.30,0);
-    var sole=mesh(bevelBox(.215,.085,.315,.04,2),M.dark,0,-.020,.055);
-    foot.add(sole);
-    var ankle=mesh(new T.SphereGeometry(.108,14,12),M.dark,0,.030,.170);
-    ankle.scale.set(1,.72,.9);foot.add(ankle);
-    for(var k=-1;k<2;k++){
-      var toe=mesh(new T.SphereGeometry(.040,12,10),M.dark,k*.062,-.030,.205);
-      toe.scale.set(1,.80,1.35);foot.add(toe);
-    }
-    leg.add(foot);
-    leg.position.set(sd*.175,-.005,.02);
-    leg.rotation.z=-sd*.10;
-    hero.add(leg);
-    hero.add(ao(.62,.34,sd*.185,.055,.06));
-  });
-
-  /* 手臂：先给方向再定姿势，比手调欧拉角可靠 */
-  function buildArm(sd,dir,bend){
-    var pivot=new T.Group();                 /* 动画只动这一层 */
-    pivot.position.set(sd*.455,.595,.075);
-    var g=new T.Group();                     /* 姿势锁在这一层 */
-    g.quaternion.setFromUnitVectors(new T.Vector3(0,-1,0),
-      new T.Vector3(dir[0],dir[1],dir[2]).normalize());
-    g.add(mesh(new T.SphereGeometry(.145,16,12),M.hero,0,0,0));
-    g.add(mesh(new T.CylinderGeometry(.104,.140,.28,16),M.hero,0,-.145,0));
-    var fore=new T.Group();fore.position.set(0,-.29,0);
-    fore.add(mesh(new T.SphereGeometry(.110,14,12),M.hero,0,0,0));
-    fore.add(mesh(new T.CylinderGeometry(.086,.108,.23,14),M.hero,0,-.115,0));
-    fore.rotation.x=bend;
-    var hand=new T.Group();hand.position.set(0,-.235,0);
-    var palm=mesh(new T.SphereGeometry(.112,18,14),M.dark,0,-.058,0);
-    palm.scale.set(.94,.86,1.14);hand.add(palm);
-    for(var i=0;i<4;i++){
-      var a=(i-1.5)*.30;
-      var f=mesh(new T.CapsuleGeometry(.025,.060,3,8),M.dark,
-        Math.sin(a)*.055,-.145,Math.cos(a)*.048);
-      f.rotation.x=.22;f.rotation.z=a;hand.add(f);
-    }
-    hand.add(mesh(new T.SphereGeometry(.033,10,8),M.dark,-.088*sd,-.045,.052));
-    fore.add(hand);g.add(fore);
-    pivot.add(g);hero.add(pivot);
-    return pivot;
+    g.setIndex(idx);g.computeBoundingSphere();
+    var m=new T.Mesh(g,material);m.castShadow=m.receiveShadow=true;return m;
   }
-  /* 屏幕右侧那只举起挥手，另一只搭在肚子上 */
-  var armR=buildArm(-1,[-.46,.78,.42],.34);
-  var armL=buildArm( 1,[-.11,-.20,.97],-.52);
-  hero.userData={armR:armR,armL:armL,eyes:EYES};
 
-  /* 报到装备：只留一只地上的箱子，参考图身上没有背包 */
-  var caseG=new T.Group();
-  caseG.add(box(.44,.32,.16,std({normalMap:sm.normal,color:0x8A4A2C,roughness:.72,
-    envMapIntensity:.7}),0,.17,0));
-  caseG.add(box(.18,.05,.06,M.pole,0,.36,0));
-  caseG.add(box(.46,.05,.18,std({color:0x6B3820,roughness:.8}),0,.19,0));
-  caseG.position.set(-.62,-.300,.30);caseG.rotation.y=.5;hero.add(caseG);
+  /* 连成一体的回转体：底部饱满、腹部最宽、上身平顺收进小头。 */
+  var bodyGeo=new T.LatheGeometry(PROF.map(function(q){return new T.Vector2(q[1],q[0]);}),192);
+  var bodyPos=bodyGeo.attributes.position;
+  for(var vi=0;vi<bodyPos.count;vi++){
+    var bx=bodyPos.getX(vi),by=bodyPos.getY(vi),bz=bodyPos.getZ(vi);
+    bodyPos.setZ(vi,bz+bulge(bx,by,bz));
+  }
+  bodyGeo.computeVertexNormals();
+  var body=new T.Mesh(bodyGeo,M.hero);body.position.y=-.34;
+  body.castShadow=body.receiveShadow=true;upperBody.add(body);
+
+  /* 奶油色腹斑是贴着躯干生成的曲面，软边贴图避免硬切边缘。 */
+  (function(){
+    var t0=.305,t1=.735,ph0=-.86,ph1=.86,nu=64,nv=44,pos=[],uv=[],idx=[];
+    for(var j=0;j<=nv;j++){
+      var t=t0+(t1-t0)*j/nv,r=radAt(t)+.0015;
+      for(var i=0;i<=nu;i++){
+        var ph=ph0+(ph1-ph0)*i/nu,x=Math.sin(ph)*r,z=Math.cos(ph)*r;
+        pos.push(x,t,z+bulge(x,t,z)+.004);uv.push(i/nu,j/nv);
+      }
+    }
+    for(j=0;j<nv;j++)for(i=0;i<nu;i++){
+      var A=j*(nu+1)+i,B=A+1,C=A+nu+1,D=C+1;idx.push(A,C,B,B,C,D);
+    }
+    var g=new T.BufferGeometry();
+    g.setAttribute("position",new T.Float32BufferAttribute(pos,3));
+    g.setAttribute("uv",new T.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();
+    var mat=std({map:bellyTex(),transparent:true,roughness:.62,side:T.DoubleSide,
+      envMapIntensity:.28,depthWrite:false});
+    var patch=new T.Mesh(g,mat);patch.position.y=-.34;
+    patch.renderOrder=1;patch.receiveShadow=true;upperBody.add(patch);
+  })();
+
+  /* 眼眶、绿色虹膜与大黑瞳属于同一眼球层级，避免近共面表面闪烁。 */
+  var EYE_T=.902,EYE_X=.068,er=radAt(EYE_T);
+  [-1,1].forEach(function(sd){
+    var ex=sd*EYE_X,ez=Math.sqrt(Math.max(1e-4,er*er-ex*ex)),eye=new T.Group();
+    eye.position.set(ex,EYE_T-.34,ez+bulge(ex,EYE_T,ez)-.010);
+    eye.add(mesh(new T.SphereGeometry(.050,32,24),M.eyeW,0,0,.006));
+    eye.add(mesh(new T.SphereGeometry(.037,32,24),M.iris,0,0,.035));
+    eye.add(mesh(new T.SphereGeometry(.025,28,20),M.eyeB,0,0,.053));
+    eye.add(mesh(new T.SphereGeometry(.010,16,12),M.gloss,.012,.014,.075));
+    eye.add(mesh(new T.SphereGeometry(.0045,10,8),M.gloss,-.011,-.009,.077));
+    eye.userData.r=1;EYES.push(eye);upperBody.add(eye);
+  });
+
+  /* 嘴是一条贴在脸上的浅弧线，保留参考图里的小幅微笑。 */
+  (function(){
+    var mt=.842,mz=radAt(mt)+bulge(0,mt,radAt(mt))+.006;
+    var curve=new T.CatmullRomCurve3([new T.Vector3(-.045,mt+.006,mz),
+      new T.Vector3(-.022,mt+.001,mz+.002),new T.Vector3(0,mt-.003,mz+.003),
+      new T.Vector3(.022,mt+.001,mz+.002),new T.Vector3(.045,mt+.006,mz)]);
+    var smile=new T.Mesh(new T.TubeGeometry(curve,24,.0045,8,false),M.mouth);
+    smile.position.y=-.34;smile.castShadow=false;upperBody.add(smile);
+  })();
+
+  /* 腿和脚各为连续体：腿从身体内部长出，脚掌轮廓一次成形，避免关节叠片。 */
+  [-1,1].forEach(function(sd){
+    var leg=new T.Group();leg.position.set(sd*.13,.34,.025);
+    leg.add(sweep([[0,0,0],[sd*.006,-.09,.008],[sd*.006,-.19,.018],[0,-.30,.03]],
+      [.092,.079,.064,.046],34,18,M.hero));
+    var fs=new T.Shape();
+    fs.moveTo(-.030,.026);
+    fs.quadraticCurveTo(-.044,.004,-.059,-.030);
+    fs.quadraticCurveTo(-.078,-.071,-.086,-.111);
+    fs.quadraticCurveTo(-.092,-.139,-.081,-.151);
+    fs.quadraticCurveTo(-.070,-.162,-.058,-.151);
+    fs.quadraticCurveTo(-.051,-.145,-.049,-.130);
+    fs.lineTo(-.045,-.153);
+    fs.quadraticCurveTo(-.040,-.169,-.026,-.166);
+    fs.quadraticCurveTo(-.012,-.164,-.011,-.148);
+    fs.lineTo(-.008,-.132);fs.lineTo(-.004,-.158);
+    fs.quadraticCurveTo(.000,-.175,.015,-.172);
+    fs.quadraticCurveTo(.030,-.169,.029,-.151);
+    fs.lineTo(.027,-.132);fs.lineTo(.035,-.151);
+    fs.quadraticCurveTo(.043,-.166,.056,-.160);
+    fs.quadraticCurveTo(.069,-.154,.063,-.137);
+    fs.quadraticCurveTo(.058,-.107,.051,-.074);
+    fs.quadraticCurveTo(.046,-.024,.031,.010);fs.lineTo(.030,.026);fs.closePath();
+    var fg=new T.ExtrudeGeometry(fs,{depth:.040,bevelEnabled:true,bevelThickness:.006,
+      bevelSize:.006,bevelSegments:3,curveSegments:8,steps:1});
+    fg.translate(0,0,-.020);fg.computeVertexNormals();
+    var foot=new T.Mesh(fg,M.dark);foot.rotation.x=-Math.PI/2;
+    foot.position.set(0,-.334,.035);foot.castShadow=foot.receiveShadow=true;leg.add(foot);
+    leg.rotation.z=-sd*.045;LEGS.push(leg);hero.add(leg);
+    hero.add(ao(.48,.30,sd*.132,.055,.06));
+  });
+
+  /* 肩、肘、腕各自有独立转轴；上臂与前臂在圆润关节内重叠，避免直筒整臂摆动。 */
+  function buildArm(sd){
+    var right=sd<0;
+    var shoulder=new T.Group();shoulder.name=right?"ArmRShoulder":"ArmLShoulder";
+    shoulder.position.set(sd*.12,.425,.130);
+    var upper=sweep([[0,0,0],[sd*.025,-.045,.018],[sd*.050,-.085,.045],
+      [sd*.055,-.120,.070]],[.060,.076,.071,.061],32,20,M.hero);
+    shoulder.add(upper);
+
+    var elbow=new T.Group();elbow.name=right?"ArmRElbow":"ArmLElbow";
+    elbow.position.set(sd*.055,-.120,.070);
+    var elbowCap=mesh(new T.SphereGeometry(.062,28,20),M.hero);
+    elbowCap.scale.set(.94,.96,1.08);elbowCap.castShadow=elbowCap.receiveShadow=true;
+    elbow.add(elbowCap);
+    var forearm=sweep([[0,0,0],[-sd*.025,-.055,.045],[-sd*.070,-.112,.100],
+      [-sd*.100,-.165,.140]],[.061,.068,.057,.043],34,20,M.hero);
+    elbow.add(forearm);
+
+    var wrist=new T.Group();wrist.name=right?"ArmRWrist":"ArmLWrist";
+    wrist.position.set(-sd*.100,-.165,.140);elbow.add(wrist);
+    var wristCap=mesh(new T.SphereGeometry(.040,22,16),M.hero);
+    wristCap.scale.set(.92,.92,1.08);wrist.add(wristCap);
+
+    /* 一块圆润的手掌外轮廓本身包含四指和拇指，消除手指根部互相穿模。 */
+    var hs=new T.Shape();
+    hs.moveTo(-.027,.052);hs.quadraticCurveTo(-.042,.048,-.046,.030);
+    hs.lineTo(-.043,-.012);hs.quadraticCurveTo(-.041,-.028,-.030,-.028);
+    hs.quadraticCurveTo(-.019,-.028,-.019,-.014);hs.lineTo(-.020,-.056);
+    hs.quadraticCurveTo(-.019,-.071,-.007,-.071);
+    hs.quadraticCurveTo(.006,-.071,.006,-.055);hs.lineTo(.008,-.015);
+    hs.lineTo(.014,-.062);hs.quadraticCurveTo(.016,-.077,.029,-.075);
+    hs.quadraticCurveTo(.041,-.073,.038,-.057);hs.lineTo(.029,-.010);
+    hs.lineTo(.039,-.043);hs.quadraticCurveTo(.044,-.056,.055,-.050);
+    hs.quadraticCurveTo(.065,-.045,.059,-.029);hs.lineTo(.045,.012);
+    hs.quadraticCurveTo(.040,.028,.031,.036);hs.lineTo(.030,.052);hs.closePath();
+    var hg=new T.ExtrudeGeometry(hs,{depth:.032,bevelEnabled:true,bevelThickness:.006,
+      bevelSize:.005,bevelSegments:3,curveSegments:8,steps:1});
+    hg.translate(0,0,-.016);hg.computeVertexNormals();
+    var hand=new T.Mesh(hg,M.dark);hand.position.set(0,0,.006);
+    hand.rotation.x=.72;hand.scale.x=-sd;
+    hand.castShadow=hand.receiveShadow=true;wrist.add(hand);
+    shoulder.add(elbow);
+    shoulder.userData={upper:upper,elbow:elbow,wrist:wrist,hand:hand};
+    upperBody.add(shoulder);return shoulder;
+  }
+  var armR=buildArm(-1),armL=buildArm(1);
+  hero.userData={upperBody:upperBody,armR:armR,armL:armL,eyes:EYES,legs:LEGS};
 })();
-var HS=1.86;hero.scale.setScalar(HS);
-hero.position.set(2.05,.44*HS,-4.3);hero.rotation.y=.30;   /* 实测脚底比局部原点还低，抬高补掉 */
+var HS=2.65;hero.scale.setScalar(HS);
+hero.position.set(2.05,.02*HS,-4.3);hero.rotation.y=.30;
 scene.add(hero);
 var heroAO=ao(3.6,.34,2.05,.05,-4.3);scene.add(heroAO);
 
@@ -1207,14 +1683,14 @@ if(WANT_POST&&T.EffectComposer){
   composer=new T.EffectComposer(renderer);
   composer.addPass(new T.RenderPass(scene,camera));
   composer.addPass(new T.UnrealBloomPass(
-    new T.Vector2(innerWidth,innerHeight),.20,.58,.92));
+    new T.Vector2(viewSize.width,viewSize.height),.20,.58,.92));
   grade=new T.ShaderPass(Grade);composer.addPass(grade);
   fxaa=new T.ShaderPass(T.FXAAShader);composer.addPass(fxaa);
   fxaa.renderToScreen=true;
 }
 function sizeFX(){
   if(!composer)return;
-  var w=innerWidth*DPR,h=innerHeight*DPR;      /* 按绘制缓冲尺寸，不是 CSS 像素 */
+  var s=getViewSize(),w=s.width*DPR,h=s.height*DPR;  /* 按绘制缓冲尺寸，不是 CSS 像素 */
   composer.setSize(w,h);
   if(fxaa)fxaa.material.uniforms.resolution.value.set(1/w,1/h);
 }
@@ -1224,11 +1700,25 @@ sizeFX();
 var HOME={theta:.34,phi:1.505,r:24,ty:3.7};
 var orb={theta:HOME.theta,phi:HOME.phi,r:HOME.r,tTheta:HOME.theta,tPhi:HOME.phi,tR:HOME.r,vTheta:0,
   target:new T.Vector3(0,HOME.ty,-12),minPhi:.60,maxPhi:1.545,minR:6,maxR:64};
+var _camHeroProbe=new T.Vector3();
+function keepCameraOutsideHero(){
+  if(typeof hero==="undefined"||!hero)return;
+  hero.updateMatrixWorld(true);
+  _camHeroProbe.copy(camera.position);hero.worldToLocal(_camHeroProbe);
+  var dx=_camHeroProbe.x,dy=_camHeroProbe.y-.56,dz=_camHeroProbe.z-.05;
+  var nx=dx/.45,ny=dy/.54,nz=dz/.66,d2=nx*nx+ny*ny+nz*nz;
+  if(d2>=1)return;
+  if(d2<1e-6){nx=0;ny=0;nz=1;d2=1;}
+  var k=1.08/Math.sqrt(d2);
+  _camHeroProbe.set(.45*nx*k,.56+.54*ny*k,.05+.66*nz*k);
+  hero.localToWorld(_camHeroProbe);camera.position.copy(_camHeroProbe);
+}
 function applyCam(el){
   var sp=Math.sin(orb.phi);
   camera.position.set(orb.target.x+orb.r*sp*Math.sin(orb.theta),
     orb.target.y+orb.r*Math.cos(orb.phi),
     orb.target.z+orb.r*sp*Math.cos(orb.theta));
+  keepCameraOutsideHero();
   camera.lookAt(orb.target);
 }
 var ptrs=new Map(),dragging=false,lastX=0,lastY=0,pinch=0,moved=0;
@@ -1243,25 +1733,34 @@ canvas.addEventListener("pointermove",function(e){
   ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(ptrs.size===2){
     var a=[].slice.call(ptrs.values()),d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
-    if(pinch)orb.tR=T.MathUtils.clamp(orb.tR*(pinch/d),orb.minR,orb.maxR);
+    if(JUMP)jt.zoom=T.MathUtils.clamp(jt.zoom*(pinch/d),.72,1.3);
+    else orb.tR=T.MathUtils.clamp(orb.tR*(pinch/d),orb.minR,orb.maxR);
     pinch=d;return;
   }
   if(!dragging)return;
   var dx=e.clientX-lastX,dy=e.clientY-lastY;
   lastX=e.clientX;lastY=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);
-  orb.tTheta-=dx*.0052;
-  orb.tPhi=T.MathUtils.clamp(orb.tPhi-dy*.0042,orb.minPhi,orb.maxPhi);
-  orb.vTheta=-dx*.0052;
+  if(JUMP){
+    jt.dragTheta-=dx*.0052;
+    jt.dragPhi=T.MathUtils.clamp(jt.dragPhi-dy*.0042,-.48,.48);
+  }else{
+    orb.tTheta-=dx*.0052;
+    orb.tPhi=T.MathUtils.clamp(orb.tPhi-dy*.0042,orb.minPhi,orb.maxPhi);
+    orb.vTheta=-dx*.0052;
+  }
 });
 function endPtr(e){
   ptrs.delete(e.pointerId);
   if(ptrs.size<2)pinch=0;
   if(ptrs.size===0){dragging=false;canvas.classList.remove("drag");}
 }
-["pointerup","pointercancel","pointerleave"].forEach(function(ev){canvas.addEventListener(ev,endPtr);});
+["pointerup","pointercancel"].forEach(function(ev){canvas.addEventListener(ev,endPtr);});
+canvas.addEventListener("pointerleave",function(e){if(!JUMP)endPtr(e);});
 canvas.addEventListener("wheel",function(e){
   e.preventDefault();
-  orb.tR=T.MathUtils.clamp(orb.tR*(1+Math.sign(e.deltaY)*.09),orb.minR,orb.maxR);hideTip();
+  if(JUMP)jt.zoom=T.MathUtils.clamp(jt.zoom*(1+Math.sign(e.deltaY)*.09),.72,1.3);
+  else orb.tR=T.MathUtils.clamp(orb.tR*(1+Math.sign(e.deltaY)*.09),orb.minR,orb.maxR);
+  hideTip();
 },{passive:false});
 
 /* ══ 16. 入场推镜 ═════════════════════════════════════ */
@@ -1291,8 +1790,15 @@ function frame(){
   var br=Math.sin(el*2.4);
   hero.scale.set(HS*(1-br*.006),HS*(1+br*.014),HS*(1-br*.006));
   var amp=JUMP?0:(intro.on?0:1);
-  hero.userData.armR.rotation.z=-Math.sin(el*4.6)*.20*amp;
-  hero.userData.armR.rotation.x=Math.sin(el*2.3)*.12*amp;
+  var armSway=Math.sin(el*2.3)*.11*amp;
+  hero.userData.armR.rotation.z=-Math.sin(el*4.6)*.14*amp;
+  hero.userData.armL.rotation.z=Math.sin(el*4.6)*.14*amp;
+  hero.userData.armR.rotation.x=armSway;
+  hero.userData.armL.rotation.x=-armSway;
+  hero.userData.armR.userData.elbow.rotation.x=-.10+Math.sin(el*4.6+.55)*.07*amp;
+  hero.userData.armL.userData.elbow.rotation.x=-.10-Math.sin(el*4.6+.55)*.07*amp;
+  hero.userData.armR.userData.wrist.rotation.y=Math.sin(el*2.1)*.04*amp;
+  hero.userData.armL.userData.wrist.rotation.y=-Math.sin(el*2.1)*.04*amp;
   var blink=(el%3.4)>3.22?.10:1;
   hero.userData.eyes.forEach(function(x){x.scale.y=blink;});
   if(JUMP)jumpHero();
@@ -1340,25 +1846,34 @@ function frame(){
   FIRST=true;
   requestAnimationFrame(frame);
 }
-addEventListener("resize",function(){
-  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight,false);sizeFX();
-});
+function resizeRenderer(){
+  viewSize=getViewSize();
+  camera.aspect=viewSize.width/viewSize.height;camera.fov=getCameraFov(camera.aspect);
+  camera.updateProjectionMatrix();
+  renderer.setSize(viewSize.width,viewSize.height,false);sizeFX();
+}
+addEventListener("resize",resizeRenderer);
+if(JUMP&&jumpStage&&window.ResizeObserver){
+  new ResizeObserver(resizeRenderer).observe(jumpStage);
+}
 
 /* ══ 17b. 可选：Blender 烘焙的校门（?blend） ═════════════
    高模 13k 面 + 自烘 AO，顶替程序化的台基/柱/梁/斗拱/屋顶/围栏；
    匾额、欢迎横幅仍用程序化版本，位置不变。载入失败就保持原样。 */
 var STRUCT_ON=true;
-if(/[?&]blend/.test(Q)&&T.GLTFLoader){
+if((/[?&]blend/.test(Q)||JUMP)&&T.GLTFLoader){
   (function(){
     var i,struct=[];
     for(i=0;i<N_STRUCT;i++)struct.push(gate.children[i]);
     for(i=N_SIGN;i<N_ALL;i++)struct.push(gate.children[i]);
+    /* 烘焙模型含同位底板；托件仍用程序化窄件连接，避免重复绘制底板。 */
+    struct.push(plaqueBacking);
     var img=new Image();
     img.onload=function(){
       var aoT=new T.CanvasTexture(img);
       aoT.wrapS=aoT.wrapT=T.ClampToEdgeWrapping;aoT.flipY=false;
       new T.GLTFLoader().load("assets/gate.glb",function(gl){
+        if(GATE_TIMED_OUT)return;
         var gm=std({normalMap:fstone,roughnessMap:sm.rough,aoMap:aoT,aoMapIntensity:1,
           color:0xA79B83,roughness:1,metalness:0,envMapIntensity:.38});
         grime(gm,.30,7.5,.42);
@@ -1368,19 +1883,30 @@ if(/[?&]blend/.test(Q)&&T.GLTFLoader){
           if(o.geometry.attributes.uv)o.geometry.setAttribute("uv2",o.geometry.attributes.uv);
           o.castShadow=o.receiveShadow=true;
         });
-        gl.scene.rotation.x=-Math.PI/2;   /* 导出没走 Y-up，Z-up 的模型在 three 里是躺着的 */
+        gl.scene.rotation.x=Math.PI/2;    /* GLB 顶点仍是 Z-up 且竖轴反向，转正到 Three.js 的 Y-up */
         gl.scene.updateMatrixWorld(true);
         var bb=new T.Box3().setFromObject(gl.scene);
         gl.scene.position.y-=bb.min.y+gate.position.y;   /* 落地：不管导出把原点放哪都对 */
         gate.add(gl.scene);
         for(var k=0;k<struct.length;k++)struct[k].visible=false;
         STRUCT_ON=false;
-      },null,function(e){ console.warn("gate.glb 载入失败，保持程序化校门",e); });
+        GATE_READY=true;
+        if(typeof start3D==="function")start3D();
+      },null,function(e){
+        console.warn("gate.glb 载入失败，保持程序化校门",e);
+        GATE_READY=true;
+        if(typeof start3D==="function")start3D();
+      });
     };
-    img.onerror=function(){ console.warn("gate_ao.png 载入失败，保持程序化校门"); };
+    img.onerror=function(){
+      console.warn("gate_ao.png 载入失败，保持程序化校门");
+      GATE_READY=true;
+      if(typeof start3D==="function")start3D();
+    };
     img.src="assets/gate_ao.png";
   })();
 }
+if(!T.GLTFLoader)GATE_READY=true;
 
 /* ══ 18. UI ═══════════════════════════════════════════ */
 /* 跳转页没有「画质 / 回到正门」两个按钮，也不该让别人抢走 #go，
@@ -1409,16 +1935,16 @@ if(/[?&]still/.test(Q)){
   load.style.transition="none";load.style.display="none";
 }
 if(/[?&]probe/.test(Q))setTimeout(function(){
-  var gl=renderer.getContext(),px=new Uint8Array(4);
-  try{gl.readPixels((innerWidth*DPR|0)>>1,(innerHeight*DPR|0)>>1,1,1,gl.RGBA,gl.UNSIGNED_BYTE,px);}catch(e){}
+  var gl=renderer.getContext(),px=new Uint8Array(4),probeSize=getViewSize();
+  try{gl.readPixels((probeSize.width*DPR|0)>>1,(probeSize.height*DPR|0)>>1,1,1,gl.RGBA,gl.UNSIGNED_BYTE,px);}catch(e){}
   var d=document.createElement("div");
   d.style.cssText="position:fixed;right:6px;bottom:6px;z-index:99;background:#000d;color:#0f0;"+
     "font:11px/1.5 ui-monospace,monospace;padding:6px 8px;border-radius:6px";
   d.textContent="calls="+renderer.info.render.calls+" tris="+renderer.info.render.triangles+
     " glErr="+gl.getError()+" lost="+gl.isContextLost()+
     " px="+Array.prototype.join.call(px,",")+" geo="+renderer.info.memory.geometries+
-    " handR="+hero.userData.armR.children[0].children[1].children[1].getWorldPosition(new T.Vector3()).toArray().map(function(v){return v.toFixed(2);}).join(",")+
-    " handL="+hero.userData.armL.children[0].children[1].children[1].getWorldPosition(new T.Vector3()).toArray().map(function(v){return v.toFixed(2);}).join(",");
+    " handR="+hero.userData.armR.userData.hand.getWorldPosition(new T.Vector3()).toArray().map(function(v){return v.toFixed(2);}).join(",")+
+    " handL="+hero.userData.armL.userData.hand.getWorldPosition(new T.Vector3()).toArray().map(function(v){return v.toFixed(2);}).join(",");
   document.body.appendChild(d);
 },60);
 window.__cv={orb:orb,camera:camera,scene:scene,renderer:renderer,
@@ -1428,24 +1954,104 @@ window.__cv={orb:orb,camera:camera,scene:scene,renderer:renderer,
    上轨道的入场：推镜 → 奶娃从画外走入 → 招手 → 鞠躬 → 跳南传。
    时间轴是 t 的纯函数（没有积分状态），所以 ?jump&frame=3.2 能定点截图验收。 */
 var TARGET="https://www.cucn.edu.cn/";
-var jt={t:0,paused:false,fired:false};
+var jt={t:0,paused:false,fired:false,started:false,dragTheta:0,dragPhi:0,zoom:1};
 /* 相机：一段纯推轨，起终点视线只差约 4°，几乎没有摇镜头，像小摇臂下压。
    P0/L0 直接抄自由漫游已验证过的 HOME 构图当远景。
    为什么要明确摆 camera.position 而不走 orb：轨道控制器的阻尼会把精确机位吃掉。 */
 var P0=new T.Vector3(8.0,5.25,10.6), L0=new T.Vector3(0.0,3.7,-12.0);
 /* 终点机位压到接近平视（俯角 2.9°）。上一版俯角 9.5°、机位偏到 x=4，
    结果校门整个被报到处帐篷挡掉、背景只剩展板和楼。
-   现在站在门洞轴线上、奶娃摆在门洞正前方 z=0.6，
+   奶娃从报到队伍前方 z=2.4 的空道入场，绕开前排后回到门洞轴线 z=0.6，
    这样它背后就是校门中柱 —— 匾额(≈15.1°)和红横幅(≈12.1°)刚好卡在画幅上沿内。 */
 var P1=new T.Vector3(0.0,2.05,10.4), L1=new T.Vector3(0.0,1.52,0.20);
 var _jp=new T.Vector3(), _jl=new T.Vector3();
-/* 角色站位：**z>0 的广场上没人**（人群游走范围是 z∈[-22,-2]，报到队列全部 z<=0.2）。
+/* 角色先沿队列前方 z=2.4 的空道前进，越过固定队列后再回到门洞轴线；移动行人由碰撞约束避让。
    早期版本把奶娃摆在 (2.05,-5.4) —— 那是报到队伍正中间，
    终点机位等于一头扎进人群，奶娃被裁掉一半、画面全是别人的后脑勺。 */
-var H0={x:-5.6,z:0.90,ry:1.57};        /* 画外左起点，面朝 +x 走 */
-var H1={x: 0.0,z:0.60,ry:.06};         /* 站位：门洞正前方，几乎正对机位 */
+var H0={x:-5.6,z:2.40,ry:1.57};        /* 画外左起点，走在人群前方，避免穿过报到队伍 */
+var H1={x: 0.0,z:0.60,ry:.06};         /* 站位：门洞正前方，终点构图保持不变 */
+/* 用肩、肘、腕三个关节制作可复现的分段动作；关键帧时间与跳转时间轴共用秒数。 */
+var armMixer=new T.AnimationMixer(hero);
+function armTrack(name,keys){
+  return new T.NumberKeyframeTrack(name,keys.map(function(k){return k[0];}),
+    keys.map(function(k){return k[1];}),T.InterpolateSmooth);
+}
+var armClip=new T.AnimationClip("奶娃_护送与挥手",7.0,[
+  armTrack("ArmRShoulder.rotation[x]",[[0,0],[1.72,0],[1.98,.24],[2.38,-.24],[2.78,.24],
+    [3.18,-.23],[3.58,.18],[3.88,0],[4,0],[4.25,-.15],[4.60,-.28],[4.9,-.30],[5.55,-.30],[5.8,-.25],
+    [6.08,-.12],[6.32,0],[7,0]]),
+  armTrack("ArmRShoulder.rotation[z]",[[0,0],[1.72,0],[1.98,-.045],[2.38,.045],[2.78,-.045],
+    [3.18,.04],[3.58,-.025],[3.88,0],[4,0],[4.22,-.40],[4.53,-1.58],
+    [4.82,-2.38],[5.60,-2.38],
+    [5.82,-1.75],[6.04,-1.0],[6.30,0],[7,0]]),
+  armTrack("ArmRElbow.rotation[x]",[[0,0],[1.72,0],[1.98,-.14],[2.38,-.19],[2.78,-.13],
+    [3.18,-.18],[3.58,-.12],[3.88,-.12],
+    [4,-.12],[4.3,.22],[4.6,.66],[4.85,.78],[5.55,.78],[5.8,.66],
+    [6.05,.28],[6.32,-.12],[7,-.12]]),
+  armTrack("ArmRWrist.rotation[y]",[[0,0],[4.65,0],[4.86,-.48],[5.02,.50],[5.18,-.52],
+    [5.34,.50],[5.50,-.42],[5.68,0],[7,0]]),
+  armTrack("ArmLShoulder.rotation[x]",[[0,0],[1.72,0],[1.98,-.22],[2.38,.22],[2.78,-.22],
+    [3.18,.21],[3.58,-.16],[3.88,0],[4,0],[7,0]]),
+  armTrack("ArmLShoulder.rotation[z]",[[0,0],[1.72,0],[1.98,.035],[2.38,-.035],[2.78,.035],
+    [3.18,-.03],[3.58,.02],[3.88,0],[4,0],[7,0]]),
+  armTrack("ArmLElbow.rotation[x]",[[0,0],[1.72,0],[1.98,-.14],[2.38,-.18],[2.78,-.12],
+    [3.18,-.17],[3.58,-.10],[3.88,-.10],
+    [4,-.10],[7,-.10]]),
+  armTrack("ArmLWrist.rotation[y]",[[0,0],[4.4,0],[4.9,.06],[5.2,-.06],[5.5,.04],[5.8,0],[7,0]]),
+  armTrack("UpperBody.rotation[x]",[[0,0],[5.65,0],[5.92,.045],[6.12,.13],[6.28,.13],
+    [6.48,.04],[6.7,0],[7,0]])
+]);
+var armAction=armMixer.clipAction(armClip);
+armAction.setLoop(T.LoopOnce,1);armAction.clampWhenFinished=true;armAction.play();
 var HY=hero.position.y;
 var DUR=reduce?2.6:7.0;
+var STAGE_PENDING=false,STAGE_STARTED=false;
+var GATE_TIMED_OUT=false;
+var openFrame=document.getElementById("opening-frame");
+var opening=document.getElementById("opening");
+var stageWait=document.getElementById("stage-wait");
+setTimeout(function(){
+  if(!GATE_READY){
+    GATE_TIMED_OUT=true;GATE_READY=true;
+    if(STAGE_PENDING)start3D();
+  }
+},4200);
+
+function requestStageStart(){
+  if(STAGE_STARTED)return;
+  STAGE_PENDING=true;
+  if(!GATE_READY&&stageWait)stageWait.classList.add("on");
+  start3D();
+}
+/* 文件协议下 iframe 的 load 时序偶尔晚于动画时间轴，交接消息之外再留一个恢复入口。 */
+if(openFrame)openFrame.addEventListener("load",function(){
+  setTimeout(requestStageStart,3600);
+},{once:true});
+setTimeout(requestStageStart,7200);
+
+function start3D(){
+  if(!STAGE_PENDING||STAGE_STARTED||!GATE_READY)return;
+  STAGE_STARTED=true;jt.started=true;
+  hero.visible=true;if(heroAO)heroAO.visible=true;
+  document.body.classList.add("stage3d-on");
+  if(stageWait)stageWait.classList.remove("on");
+  if(opening){
+    opening.classList.add("out");
+    setTimeout(function(){if(opening.parentNode)opening.parentNode.removeChild(opening);},900);
+  }
+  jumpTick(0);
+}
+
+window.addEventListener("message",function(e){
+  if(!openFrame||e.source!==openFrame.contentWindow||!e.data)return;
+  if(e.origin!==location.origin&&!(location.protocol==="file:"&&e.origin==="null"))return;
+  if(e.data.type==="jump-target"){
+    location.replace(TARGET);return;
+  }
+  if(e.data.type==="jump-stage"){
+    requestStageStart();
+  }
+});
 
 function sstep(t,a,b){return Math.max(0,Math.min(1,(t-a)/(b-a)));}
 function sease(p){return 1-Math.pow(1-p,3);}
@@ -1453,38 +2059,38 @@ function sease(p){return 1-Math.pow(1-p,3);}
 function jumpCam(){
   var p=reduce?1:sease(sstep(jt.t,0,2.2));
   _jp.lerpVectors(P0,P1,p);_jl.lerpVectors(L0,L1,p);
-  camera.position.copy(_jp);camera.lookAt(_jl);
+  var dx=_jp.x-_jl.x,dy=_jp.y-_jl.y,dz=_jp.z-_jl.z;
+  var radius=Math.sqrt(dx*dx+dy*dy+dz*dz)*jt.zoom;
+  var theta=Math.atan2(dx,dz)+jt.dragTheta;
+  var phi=T.MathUtils.clamp(Math.acos(T.MathUtils.clamp(dy/Math.sqrt(dx*dx+dy*dy+dz*dz),-1,1))+jt.dragPhi,1.02,1.98);
+  var sinPhi=Math.sin(phi);
+  camera.position.set(_jl.x+radius*sinPhi*Math.sin(theta),
+    _jl.y+radius*Math.cos(phi),_jl.z+radius*sinPhi*Math.cos(theta));
+  camera.lookAt(_jl);
 }
 function jumpHero(){
-  var aR=hero.userData.armR,aL=hero.userData.armL;
+  var legs=hero.userData.legs;
   if(reduce){                            /* 减弱动态：直接落在终态，不动 */
     hero.position.x=H1.x;hero.position.z=H1.z;hero.rotation.y=H1.ry;
-    hero.rotation.x=0;aR.rotation.set(0,0,0);aL.rotation.set(0,0,0);
+    hero.rotation.x=0;armMixer.setTime(6.7);
+    legs[0].rotation.x=0;legs[1].rotation.x=0;
     if(heroAO){heroAO.position.x=H1.x;heroAO.position.z=H1.z;}
     return;
   }
   var w=sstep(jt.t,1.8,4.0),we=sease(w);
   hero.position.x=H0.x+(H1.x-H0.x)*we;
-  hero.position.z=H0.z+(H1.z-H0.z)*we;
+  var zPath=sease(sstep(we,.58,.92));  /* 先沿队伍前方通过，再平滑转入门洞轴线 */
+  hero.position.z=H0.z+(H1.z-H0.z)*zPath;
   hero.rotation.y=H0.ry+(H1.ry-H0.ry)*we;
   var walking=(w>0&&w<1);
-  hero.position.y=HY+(walking?Math.abs(Math.sin(jt.t*7.6))*.07:0);
+  hero.position.y=HY+(walking?(1-Math.cos(jt.t*7.6))*.018:0);
+  hero.rotation.z=walking?Math.sin(jt.t*3.8)*.018:0;
   if(heroAO){heroAO.position.x=hero.position.x;heroAO.position.z=hero.position.z;}
 
   var sw=walking?Math.sin(jt.t*7.6):0;
-  aR.rotation.x=sw*.62;aL.rotation.x=-sw*.62;
-  aR.rotation.z=walking?-.12:0;aL.rotation.z=walking?.10:0;
-
-  var wv=sstep(jt.t,4.0,5.7);                 /* 招手 */
-  if(wv>0&&jt.t<6.0){
-    var k=sstep(jt.t,4.1,4.7);
-    aR.rotation.z=-1.05*k-Math.sin(jt.t*11.5)*.30*k;
-    aR.rotation.x=Math.sin(jt.t*11.5)*.22*k;
-    aL.rotation.z=.24*k;
-  }
-  var bw=sstep(jt.t,5.8,6.15);                /* 鞠躬 → 起 */
-  var bu=sstep(jt.t,6.15,6.55);
-  hero.rotation.x=(bw-bu)*.34;
+  legs[0].rotation.x=sw*.34;legs[1].rotation.x=-sw*.34;
+  hero.rotation.x=0;
+  armMixer.setTime(Math.min(7,jt.t));
   if(jt.t>5.75){var sb=document.getElementById("sub");if(sb)sb.classList.add("on");}
 }
 
@@ -1500,20 +2106,26 @@ setTimeout(function(){ if(!FIRST)location.replace("index.html"); },
            reduce?7000:11000);
 
 function jumpUI(){
+  var progress=Math.max(0,Math.min(1,jt.t/DUR));
   var r=document.getElementById("ring");
-  if(r)r.setAttribute("stroke-dashoffset",String(144.5*(1-Math.max(0,Math.min(1,jt.t/DUR)))));
+  if(r)r.setAttribute("stroke-dashoffset",String(144.5*(1-progress)));
+  var fill=document.getElementById("jump-fill");if(fill)fill.style.width=(progress*100)+"%";
+  var seconds=document.getElementById("jump-seconds");
+  if(seconds)seconds.textContent=Math.max(0,DUR-jt.t).toFixed(1)+"s";
   if(jt.t>=DUR&&!FREEZE)jumpFire();
 }
 
 /* 交互：轻点立即前往，长按暂停 */
 var FREEZE=(function(){var m=/[?&]frame=([-0-9.]+)/.exec(Q);return m?parseFloat(m[1]):null;})();
 if(JUMP){
-  canvas.style.cursor="pointer";
+  canvas.style.cursor="grab";
   document.getElementById("go").addEventListener("click",function(e){
     e.stopPropagation();jumpFire();});
   var jpd=0,jhold=false,jmoved=0,jx=0,jy=0;
   canvas.addEventListener("pointerdown",function(e){
-    jpd=performance.now();jhold=false;jmoved=0;jx=e.clientX;jy=e.clientY;});
+    if(e.button!==undefined&&e.button!==0)return;
+    jpd=performance.now();jhold=false;jmoved=0;jx=e.clientX;jy=e.clientY;
+    try{canvas.setPointerCapture(e.pointerId);}catch(_){}});
   canvas.addEventListener("pointermove",function(e){
     if(!jpd)return;
     jmoved=Math.max(jmoved,Math.abs(e.clientX-jx)+Math.abs(e.clientY-jy));
@@ -1528,7 +2140,7 @@ if(JUMP){
       var h=document.getElementById("hold");if(h)h.classList.remove("on");}
     else if(held<400&&jmoved<14)jumpFire();      /* 轻点 = 立即前往 */
   };
-  ["pointerup","pointercancel","pointerleave"].forEach(function(ev){
+  ["pointerup","pointercancel"].forEach(function(ev){
     canvas.addEventListener(ev,jup);});
   document.addEventListener("visibilitychange",function(){
     if(document.hidden)jt.paused=true; else if(!jpd)jt.paused=false;});
@@ -1541,11 +2153,13 @@ if(reduce){
 }
 
 function jumpTick(dt){
+  if(!jt.started)return;
   if(FREEZE!==null){jt.t=FREEZE;jumpCam();jumpUI();return;}
   if(!jt.paused)jt.t+=dt;
   jumpCam();jumpUI();
 }
 
+if(JUMP){hero.visible=false;if(heroAO)heroAO.visible=false;}
 applyCam();if(JUMP)jumpTick(0);updateCrowd(0,0);renderer.render(scene,camera);
 requestAnimationFrame(function(){
   load.classList.add("out");
